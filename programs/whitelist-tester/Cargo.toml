@@ -1,6 +1,6 @@
 [package]
 name = "whitelist-tester"
-version = "0.2.1"
+version = "0.3.0"
 description = "Example of using the locked-voter whitelist."
 edition = "2021"
 homepage = "https://tribeca.so"
@@ -25,4 +25,4 @@ anchor-lang = ">=0.17"
 anchor-spl = ">=0.17"
 locked-voter = { path = "../locked-voter", features = [
     "cpi"
-], version = "^0.2" }
+], version = "^0.3" }

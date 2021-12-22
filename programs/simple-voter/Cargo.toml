@@ -1,6 +1,6 @@
 [package]
 name = "simple-voter"
-version = "0.2.1"
+version = "0.3.0"
 description = "A simple Tribeca voter program where 1 token = 1 vote."
 edition = "2021"
 homepage = "https://tribeca.so"
@@ -22,6 +22,6 @@ default = []
 [dependencies]
 anchor-lang = ">=0.17"
 anchor-spl = ">=0.17"
-govern = { path = "../govern", features = ["cpi"], version = "0.2.0" }
-smart-wallet = { version = "^0.4", features = ["cpi"] }
+govern = { path = "../govern", features = ["cpi"], version = "^0.3" }
+smart-wallet = { version = "^0.5", features = ["cpi"] }
 vipers = "1.5.5"

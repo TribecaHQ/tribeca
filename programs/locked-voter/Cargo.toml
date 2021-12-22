@@ -1,6 +1,6 @@
 [package]
 name = "locked-voter"
-version = "0.2.1"
+version = "0.3.0"
 description = "Voter which locks up governance tokens for a user-provided duration in exchange for increased voting power."
 edition = "2021"
 homepage = "https://tribeca.so"
@@ -22,7 +22,7 @@ default = []
 [dependencies]
 anchor-lang = ">=0.17"
 anchor-spl = ">=0.17"
-govern = { path = "../govern", features = ["cpi"], version = "0.2.0" }
+govern = { path = "../govern", features = ["cpi"], version = "^0.3" }
 num-traits = "0.2"
 vipers = "1.5.5"
 

@@ -570,13 +570,13 @@ dependencies = [
 
 [[package]]
 name = "govern"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
  "num-traits",
  "proptest",
- "smart-wallet 0.5.4",
+ "smart-wallet",
  "vipers",
 ]
 
@@ -744,7 +744,7 @@ dependencies = [
 
 [[package]]
 name = "locked-voter"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -1176,12 +1176,12 @@ dependencies = [
 
 [[package]]
 name = "simple-voter"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
  "govern",
- "smart-wallet 0.4.3",
+ "smart-wallet",
  "vipers",
 ]
 
@@ -1190,16 +1190,6 @@ name = "smallvec"
 version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ecab6c735a6bb4139c0caafd0cc3635748bbb3acf4550e8138122099251f309"
-
-[[package]]
-name = "smart-wallet"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "434c87fc7208df82bf6fe0fd078b19c126befc9a7f937bcc7f23c0d9a2f7f156"
-dependencies = [
- "anchor-lang",
- "vipers",
-]
 
 [[package]]
 name = "smart-wallet"
@@ -1525,7 +1515,7 @@ dependencies = [
 
 [[package]]
 name = "whitelist-tester"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
