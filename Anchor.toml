@@ -1,0 +1,35 @@
+anchor_version = "0.19.0"
+solana_version = "1.8.8"
+
+[scripts]
+test = "yarn mocha"
+
+[provider]
+cluster = "localnet"
+wallet = "./tests/test-key.json"
+
+[[test.genesis]]
+address = "GokivDYuQXPZCWRkwMhdH2h91KpDQXBEmpgBgs55bnpH"
+program = "./artifacts/deploy/smart_wallet.so"
+
+[programs.localnet]
+govern = "Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw"
+locked_voter = "LocktDzaV1W2Bm9DeZeiyz4J9zs4fRqNiYqQyracRXw"
+simple_voter = "Tok6iuA69RLN1QrpXgQKnDgE1YYbLzQsZGSoz75fQdz"
+whitelist_tester = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+
+[programs.devnet]
+govern = "Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw"
+locked_voter = "LocktDzaV1W2Bm9DeZeiyz4J9zs4fRqNiYqQyracRXw"
+simple_voter = "Tok6iuA69RLN1QrpXgQKnDgE1YYbLzQsZGSoz75fQdz"
+whitelist_tester = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+
+[programs.testnet]
+govern = "Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw"
+locked_voter = "LocktDzaV1W2Bm9DeZeiyz4J9zs4fRqNiYqQyracRXw"
+simple_voter = "Tok6iuA69RLN1QrpXgQKnDgE1YYbLzQsZGSoz75fQdz"
+whitelist_tester = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+
+[programs.mainnet]
+govern = "Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw"
+locked_voter = "LocktDzaV1W2Bm9DeZeiyz4J9zs4fRqNiYqQyracRXw"

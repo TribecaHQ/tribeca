@@ -1,0 +1,94 @@
+{
+  "name": "@tribecahq/tribeca-sdk",
+  "version": "0.2.1",
+  "description": "The TypeScript SDK for Tribeca, an open standard and toolkit for launching DAOs on Solana.",
+  "keywords": [
+    "solana",
+    "tribeca",
+    "governance"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "repository": "git@github.com:TribecaHQ/tribeca.git",
+  "author": "Tribeca Protocol <team@tribeca.so>",
+  "bugs": {
+    "url": "https://github.com/TribecaHQ/tribeca/issues",
+    "email": "team@tribeca.so"
+  },
+  "homepage": "https://tribeca.so",
+  "license": "AGPL-3.0",
+  "scripts": {
+    "build": "rm -fr dist/ && tsc -P tsconfig.build.json && tsc -P tsconfig.esm.json",
+    "clean": "rm -fr dist/",
+    "idl:generate": "./scripts/parse-idls.sh && ./scripts/generate-idl-types.sh",
+    "idl:generate:nolint": "./scripts/parse-idls.sh && RUN_ESLINT=none ./scripts/generate-idl-types.sh",
+    "typecheck": "tsc",
+    "lint": "eslint . --cache",
+    "lint:ci": "eslint . --max-warnings=0",
+    "test:e2e": "anchor test --skip-build 'tests/**/*.ts'",
+    "docs:generate": "typedoc --excludePrivate --includeVersion --out site/ts/ src/index.ts",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@gokiprotocol/client": "^0.5.4",
+    "@project-serum/anchor": "^0.19.1-beta.1",
+    "@rushstack/eslint-patch": "^1.1.0",
+    "@saberhq/anchor-contrib": "^1.11.2",
+    "@saberhq/chai-solana": "^1.11.2",
+    "@saberhq/eslint-config": "^1.11.2",
+    "@saberhq/solana-contrib": "^1.11.2",
+    "@saberhq/token-utils": "^1.11.2",
+    "@solana/web3.js": "^1.31.0",
+    "@types/bn.js": "^5.1.0",
+    "@types/chai": "^4.3.0",
+    "@types/lodash": "^4.14.178",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.11.14",
+    "@types/prettier": "^2.4.2",
+    "@yarnpkg/doctor": "^3.1.0",
+    "bn.js": "^5.2.0",
+    "chai": "^4.3.4",
+    "chai-bn": "^0.3.0",
+    "eslint": "^8.5.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-plugin-import": "^2.25.3",
+    "husky": "^7.0.4",
+    "jsbi": "^4.1.0",
+    "lint-staged": "^12.1.3",
+    "lodash": "^4.17.21",
+    "mocha": "^9.1.3",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.4.0",
+    "typedoc": "^0.22.10",
+    "typescript": "^4.5.4"
+  },
+  "peerDependencies": {
+    "@gokiprotocol/client": "^0.5",
+    "@project-serum/anchor": "^0.19",
+    "@saberhq/anchor-contrib": "^1.10.6",
+    "@saberhq/solana-contrib": "^1.10.6",
+    "@saberhq/token-utils": "^1.10.6",
+    "@solana/web3.js": "^1.29.2",
+    "bn.js": "^5.2.0"
+  },
+  "resolutions": {
+    "bn.js": "^5.2.0",
+    "@types/bn.js": "^5.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "lint-staged": {
+    "*.{ts,tsx}": "eslint --cache --fix",
+    "*.{js,json,jsx,html,css,md}": "prettier --write"
+  },
+  "dependencies": {
+    "tiny-invariant": "^1.2.0",
+    "tslib": "^2.3.1"
+  },
+  "packageManager": "yarn@3.1.1"
+}

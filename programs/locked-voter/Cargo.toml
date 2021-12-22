@@ -1,0 +1,30 @@
+[package]
+name = "locked-voter"
+version = "0.2.1"
+description = "Voter which locks up governance tokens for a user-provided duration in exchange for increased voting power."
+edition = "2021"
+homepage = "https://tribeca.so"
+repository = "https://github.com/TribecaHQ/tribeca"
+authors = ["Tribeca Team <team@tribeca.so>"]
+license = "AGPL-3.0"
+keywords = ["solana", "anchor", "governance", "tribeca"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "locked_voter"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = ">=0.17"
+anchor-spl = ">=0.17"
+govern = { path = "../govern", features = ["cpi"], version = "0.2.0" }
+num-traits = "0.2"
+vipers = "1.5.5"
+
+[dev-dependencies]
+proptest = { version = "1.0" }

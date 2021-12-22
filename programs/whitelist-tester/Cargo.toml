@@ -1,0 +1,28 @@
+[package]
+name = "whitelist-tester"
+version = "0.2.1"
+description = "Example of using the locked-voter whitelist."
+edition = "2021"
+homepage = "https://tribeca.so"
+repository = "https://github.com/TribecaHQ/tribeca"
+authors = ["Tribeca Team <team@tribeca.so>"]
+license = "AGPL-3.0"
+keywords = ["solana", "anchor", "governance", "tribeca"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "whitelist_tester"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = ">=0.17"
+anchor-spl = ">=0.17"
+locked-voter = { path = "../locked-voter", features = [
+    "cpi"
+], version = "^0.2" }
