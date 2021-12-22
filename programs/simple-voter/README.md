@@ -5,6 +5,8 @@
 
 A simple Tribeca voter program where 1 token = 1 vote.
 
+**NOTE: this program is not production ready and is not deployed on mainnet.**
+
 ## License
 
 AGPL-3.0.
