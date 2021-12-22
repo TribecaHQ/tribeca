@@ -1,0 +1,89 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@tribecahq/tribeca-sdk - v0.2.1</title><meta name="description" content="Documentation for @tribecahq/tribeca-sdk - v0.2.1"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@tribecahq/tribeca-sdk - v0.2.1</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>@tribecahq/tribeca-sdk - v0.2.1</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#♜-tribeca" id="♜-tribeca" style="color: inherit; text-decoration: none;">
+  <h1>♜ Tribeca</h1>
+</a>
+<p><a href="https://github.com/TribecaHQ/tribeca/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-AGPL%203.0-blue" alt="License"></a>
+<a href="https://github.com/TribecaHQ/tribeca/actions/workflows/programs-e2e.yml?query=branch%3Amaster"><img src="https://img.shields.io/github/workflow/status/TribecaHQ/tribeca/E2E/master" alt="Build Status"></a>
+<a href="https://github.com/TribecaHQ/tribeca/graphs/contributors"><img src="https://img.shields.io/github/contributors/TribecaHQ/tribeca" alt="Contributors"></a></p>
+<p align="center">
+    <img src="/images/banner.png" />
+</p>
+
+<p align="center">
+    An open standard and toolkit for launching DAOs on Solana.
+</p>
+
+
+<a href="#background" id="background" style="color: inherit; text-decoration: none;">
+  <h2>Background</h2>
+</a>
+<p>Tribeca is a port of <a href="https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/GovernorAlpha.sol">Governor Alpha</a> on Solana. It makes a few key design decisions that differentiate it from the <a href="https://github.com/solana-labs/solana-program-library/tree/master/governance">SPL Governance Program</a>:</p>
+<ul>
+<li><strong>Built with Anchor.</strong> Tribeca is pluggable with other Anchor-based projects and tools, allowing for greater composability.</li>
+<li><strong>Modularity.</strong> Tribeca is built to be flexible and extensible, splitting out proposals/voting, transaction execution, and staking into three separate programs.</li>
+<li><strong>Hosted.</strong> The Tribeca DAO program is meant to be deployed as one instance of a program, similar to the <a href="https://spl.solana.com/token">SPL Token Program</a>. It is an open standard that any other project can build upon, without requiring teams to deploy their own DAO or giving custody of user tokens to Tribeca.</li>
+<li><strong>Simplicity.</strong> Tribeca does as little as possible, giving DAOs the freedom to choose how their governance system operates.</li>
+</ul>
+
+<a href="#note" id="note" style="color: inherit; text-decoration: none;">
+  <h2>Note</h2>
+</a>
+<ul>
+<li><strong>Tribeca is in active development, so all APIs are subject to change.</strong></li>
+<li><strong>This code is unaudited. Use at your own risk.</strong></li>
+</ul>
+
+<a href="#packages" id="packages" style="color: inherit; text-decoration: none;">
+  <h2>Packages</h2>
+</a>
+<table>
+<thead>
+<tr>
+<th align="left">Package</th>
+<th align="left">Description</th>
+<th align="left">Version</th>
+<th align="left">Docs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>govern</code></td>
+<td align="left">Handles proposal creation, lifecycle, voting, and execution.</td>
+<td align="left"><a href="https://crates.io/crates/govern"><img src="https://img.shields.io/crates/v/govern" alt="Crates.io"></a></td>
+<td align="left"><a href="https://docs.rs/govern"><img src="https://docs.rs/govern/badge.svg" alt="Docs.rs"></a></td>
+</tr>
+<tr>
+<td align="left"><code>locked-voter</code></td>
+<td align="left">Voter which locks up governance tokens for a user-provided duration in exchange for increased voting power.</td>
+<td align="left"><a href="https://crates.io/crates/locked-voter"><img src="https://img.shields.io/crates/v/locked-voter" alt="crates"></a></td>
+<td align="left"><a href="https://docs.rs/locked-voter"><img src="https://docs.rs/locked-voter/badge.svg" alt="Docs.rs"></a></td>
+</tr>
+<tr>
+<td align="left"><code>simple-voter</code></td>
+<td align="left">A simple Tribeca voter program where 1 token = 1 vote.</td>
+<td align="left"><a href="https://crates.io/crates/simple-voter"><img src="https://img.shields.io/crates/v/simple-voter" alt="crates"></a></td>
+<td align="left"><a href="https://docs.rs/simple-voter"><img src="https://docs.rs/simple-voter/badge.svg" alt="Docs.rs"></a></td>
+</tr>
+<tr>
+<td align="left"><code>@tribecahq/tribeca-sdk</code></td>
+<td align="left">TypeScript SDK for Tribeca</td>
+<td align="left"><a href="https://www.npmjs.com/package/@tribecahq/tribeca-sdk"><img src="https://img.shields.io/npm/v/@tribecahq/tribeca-sdk.svg" alt="npm"></a></td>
+<td align="left"><a href="https://docs.quarry.so/ts/"><img src="https://img.shields.io/badge/docs-typedoc-blue" alt="Docs"></a></td>
+</tr>
+</tbody></table>
+
+<a href="#addresses" id="addresses" style="color: inherit; text-decoration: none;">
+  <h2>Addresses</h2>
+</a>
+<p>Program addresses are the same on devnet and mainnet-beta.</p>
+
+<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+  <h2>Documentation</h2>
+</a>
+<p>Documentation is a work in progress. For now, one should read <a href="/tests">the end-to-end tests of the SDK</a>.</p>
+
+<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+  <h2>License</h2>
+</a>
+<p>Tribeca Protocol is licensed under the GNU Affero General Public License v3.0.</p>
+<p>In short, this means that any changes to this code must be made open source and available under the AGPL-v3.0 license, even if only used privately. If you have a need to use this program and cannot respect the terms of the license, please message us our team directly at <a href="mailto:team@tribeca.so">team@tribeca.so</a>.</p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-enum"><a href="enums/ProposalState.html" class="tsd-kind-icon">Proposal<wbr/>State</a></li><li class="tsd-kind-enum"><a href="enums/VoteSide.html" class="tsd-kind-icon">Vote<wbr/>Side</a></li><li class="tsd-kind-class"><a href="classes/GovernWrapper.html" class="tsd-kind-icon">Govern<wbr/>Wrapper</a></li><li class="tsd-kind-class"><a href="classes/GovernorWrapper.html" class="tsd-kind-icon">Governor<wbr/>Wrapper</a></li><li class="tsd-kind-class"><a href="classes/LockerWrapper.html" class="tsd-kind-icon">Locker<wbr/>Wrapper</a></li><li class="tsd-kind-class"><a href="classes/SimpleVoterWrapper.html" class="tsd-kind-icon">Simple<wbr/>Voter<wbr/>Wrapper</a></li><li class="tsd-kind-class"><a href="classes/TribecaSDK.html" class="tsd-kind-icon">TribecaSDK</a></li><li class="tsd-kind-class"><a href="classes/VoteEscrow.html" class="tsd-kind-icon">Vote<wbr/>Escrow</a></li><li class="tsd-kind-interface"><a href="interfaces/TribecaPrograms.html" class="tsd-kind-icon">Tribeca<wbr/>Programs</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ElectorateData" class="tsd-kind-icon">Electorate<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#EscrowData" class="tsd-kind-icon">Escrow<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GovernIDL" class="tsd-kind-icon">GovernIDL</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GovernProgram" class="tsd-kind-icon">Govern<wbr/>Program</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GovernTypes" class="tsd-kind-icon">Govern<wbr/>Types</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GovernanceParameters" class="tsd-kind-icon">Governance<wbr/>Parameters</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GovernorData" class="tsd-kind-icon">Governor<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LockedVoterError" class="tsd-kind-icon">Locked<wbr/>Voter<wbr/>Error</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LockedVoterIDL" class="tsd-kind-icon">Locked<wbr/>VoterIDL</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LockedVoterProgram" class="tsd-kind-icon">Locked<wbr/>Voter<wbr/>Program</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LockedVoterTypes" class="tsd-kind-icon">Locked<wbr/>Voter<wbr/>Types</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LockerData" class="tsd-kind-icon">Locker<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LockerParams" class="tsd-kind-icon">Locker<wbr/>Params</a></li><li class="tsd-kind-type-alias"><a href="modules.html#PendingElectorate" class="tsd-kind-icon">Pending<wbr/>Electorate</a></li><li class="tsd-kind-type-alias"><a href="modules.html#PendingGovernor" class="tsd-kind-icon">Pending<wbr/>Governor</a></li><li class="tsd-kind-type-alias"><a href="modules.html#PendingProposal" class="tsd-kind-icon">Pending<wbr/>Proposal</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ProposalData" class="tsd-kind-icon">Proposal<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ProposalInstruction" class="tsd-kind-icon">Proposal<wbr/>Instruction</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ProposalMetaData" class="tsd-kind-icon">Proposal<wbr/>Meta<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#SimpleVoterIDL" class="tsd-kind-icon">Simple<wbr/>VoterIDL</a></li><li class="tsd-kind-type-alias"><a href="modules.html#SimpleVoterProgram" class="tsd-kind-icon">Simple<wbr/>Voter<wbr/>Program</a></li><li class="tsd-kind-type-alias"><a href="modules.html#SimpleVoterTypes" class="tsd-kind-icon">Simple<wbr/>Voter<wbr/>Types</a></li><li class="tsd-kind-type-alias"><a href="modules.html#TokenRecordData" class="tsd-kind-icon">Token<wbr/>Record<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#VoteArgs" class="tsd-kind-icon">Vote<wbr/>Args</a></li><li class="tsd-kind-type-alias"><a href="modules.html#VoteData" class="tsd-kind-icon">Vote<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#WhitelistArgs" class="tsd-kind-icon">Whitelist<wbr/>Args</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_DECIMALS" class="tsd-kind-icon">DEFAULT_<wbr/>DECIMALS</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_GOVERNANCE_PARAMETERS" class="tsd-kind-icon">DEFAULT_<wbr/>GOVERNANCE_<wbr/>PARAMETERS</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_LOCKER_PARAMS" class="tsd-kind-icon">DEFAULT_<wbr/>LOCKER_<wbr/>PARAMS</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_PROPOSAL_THRESHOLD" class="tsd-kind-icon">DEFAULT_<wbr/>PROPOSAL_<wbr/>THRESHOLD</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_QUORUM_VOTES" class="tsd-kind-icon">DEFAULT_<wbr/>QUORUM_<wbr/>VOTES</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_VOTE_DELAY" class="tsd-kind-icon">DEFAULT_<wbr/>VOTE_<wbr/>DELAY</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_VOTE_PERIOD" class="tsd-kind-icon">DEFAULT_<wbr/>VOTE_<wbr/>PERIOD</a></li><li class="tsd-kind-variable"><a href="modules.html#GovernErrors" class="tsd-kind-icon">Govern<wbr/>Errors</a></li><li class="tsd-kind-variable"><a href="modules.html#GovernJSON" class="tsd-kind-icon">GovernJSON</a></li><li class="tsd-kind-variable"><a href="modules.html#LockedVoterErrors" class="tsd-kind-icon">Locked<wbr/>Voter<wbr/>Errors</a></li><li class="tsd-kind-variable"><a href="modules.html#LockedVoterJSON" class="tsd-kind-icon">Locked<wbr/>VoterJSON</a></li><li class="tsd-kind-variable"><a href="modules.html#ONE_DAY" class="tsd-kind-icon">ONE_<wbr/>DAY</a></li><li class="tsd-kind-variable"><a href="modules.html#ONE_YEAR" class="tsd-kind-icon">ONE_<wbr/>YEAR</a></li><li class="tsd-kind-variable"><a href="modules.html#PROPOSAL_STATE_LABELS" class="tsd-kind-icon">PROPOSAL_<wbr/>STATE_<wbr/>LABELS</a></li><li class="tsd-kind-variable"><a href="modules.html#SimpleVoterErrors" class="tsd-kind-icon">Simple<wbr/>Voter<wbr/>Errors</a></li><li class="tsd-kind-variable"><a href="modules.html#SimpleVoterJSON" class="tsd-kind-icon">Simple<wbr/>VoterJSON</a></li><li class="tsd-kind-variable"><a href="modules.html#TRIBECA_ADDRESSES" class="tsd-kind-icon">TRIBECA_<wbr/>ADDRESSES</a></li><li class="tsd-kind-variable"><a href="modules.html#TRIBECA_CODERS" class="tsd-kind-icon">TRIBECA_<wbr/>CODERS</a></li><li class="tsd-kind-variable"><a href="modules.html#TRIBECA_IDLS" class="tsd-kind-icon">TRIBECA_<wbr/>IDLS</a></li><li class="tsd-kind-variable"><a href="modules.html#VOTE_SIDE_LABELS" class="tsd-kind-icon">VOTE_<wbr/>SIDE_<wbr/>LABELS</a></li><li class="tsd-kind-function"><a href="modules.html#createGovernorWithElectorate" class="tsd-kind-icon">create<wbr/>Governor<wbr/>With<wbr/>Electorate</a></li><li class="tsd-kind-function"><a href="modules.html#createLocker" class="tsd-kind-icon">create<wbr/>Locker</a></li><li class="tsd-kind-function"><a href="modules.html#findEscrowAddress" class="tsd-kind-icon">find<wbr/>Escrow<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findGovernorAddress" class="tsd-kind-icon">find<wbr/>Governor<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findLockerAddress" class="tsd-kind-icon">find<wbr/>Locker<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findProposalAddress" class="tsd-kind-icon">find<wbr/>Proposal<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findProposalMetaAddress" class="tsd-kind-icon">find<wbr/>Proposal<wbr/>Meta<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findSimpleElectorateAddress" class="tsd-kind-icon">find<wbr/>Simple<wbr/>Electorate<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findTokenRecordAddress" class="tsd-kind-icon">find<wbr/>Token<wbr/>Record<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findVoteAddress" class="tsd-kind-icon">find<wbr/>Vote<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#findWhitelistAddress" class="tsd-kind-icon">find<wbr/>Whitelist<wbr/>Address</a></li><li class="tsd-kind-function"><a href="modules.html#getProposalState" class="tsd-kind-icon">get<wbr/>Proposal<wbr/>State</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
