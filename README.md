@@ -12,9 +12,10 @@
     An open standard and toolkit for launching DAOs on Solana.
 </p>
 
-<p align="center">
-    [Official documentation](https://docs.tribeca.so/)
-</p>
+- [Website](https://tribeca.so)
+- [Twitter](https://twitter.com/TribecaDAO)
+- [GitHub](https://github.com/TribecaHQ)
+- [Official documentation](https://docs.tribeca.so/)
 
 ## About
 
@@ -47,7 +48,7 @@ Program addresses are the same on devnet and mainnet-beta.
 
 ## Documentation
 
-Documentation is a work in progress. For now, one should read [the end-to-end tests of the SDK](/tests).
+The official documentation is hosted at [docs.tribeca.so.](https://docs.tribeca.so/).
 
 ## License
 
