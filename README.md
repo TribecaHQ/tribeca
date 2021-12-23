@@ -12,14 +12,20 @@
     An open standard and toolkit for launching DAOs on Solana.
 </p>
 
-## Background
+<p align="center">
+    [Official documentation](https://docs.tribeca.so/)
+</p>
 
-Tribeca is a port of [Governor Alpha](https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/GovernorAlpha.sol) on Solana. It makes a few key design decisions that differentiate it from the [SPL Governance Program](https://github.com/solana-labs/solana-program-library/tree/master/governance):
+## About
+
+Tribeca is an open source protocol for launching decentralized autonomous organizations on Solana. It is heavily inspired by the designs of [Compound](https://compound.finance/docs/governance) and [Curve](https://curve.readthedocs.io/dao-vecrv.html) governance.
 
 - **Built with Anchor.** Tribeca is pluggable with other Anchor-based projects and tools, allowing for greater composability.
 - **Modularity.** Tribeca is built to be flexible and extensible, splitting out proposals/voting, transaction execution, and staking into three separate programs.
 - **Hosted.** The Tribeca DAO program is meant to be deployed as one instance of a program, similar to the [SPL Token Program](https://spl.solana.com/token). It is an open standard that any other project can build upon, without requiring teams to deploy their own DAO or giving custody of user tokens to Tribeca.
 - **Simplicity.** Tribeca does as little as possible, giving DAOs the freedom to choose how their governance system operates.
+
+For the most up-to-date documentation, please visit the [official documentation site.](https://docs.tribeca.so/)
 
 ## Note
 
@@ -28,12 +34,12 @@ Tribeca is a port of [Governor Alpha](https://github.com/compound-finance/compou
 
 ## Packages
 
-| Package                  | Description                                                                                                 | Version                                                                                                                 | Docs                                                                                  |
-| :----------------------- | :---------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
-| `govern`                 | Handles proposal creation, lifecycle, voting, and execution.                                                | [![Crates.io](https://img.shields.io/crates/v/govern)](https://crates.io/crates/govern)                                 | [![Docs.rs](https://docs.rs/govern/badge.svg)](https://docs.rs/govern)                |
-| `locked-voter`           | Voter which locks up governance tokens for a user-provided duration in exchange for increased voting power. | [![crates](https://img.shields.io/crates/v/locked-voter)](https://crates.io/crates/locked-voter)                        | [![Docs.rs](https://docs.rs/locked-voter/badge.svg)](https://docs.rs/locked-voter)    |
-| `simple-voter`           | A simple Tribeca voter program where 1 token = 1 vote.                                                      | [![crates](https://img.shields.io/crates/v/simple-voter)](https://crates.io/crates/simple-voter)                        | [![Docs.rs](https://docs.rs/simple-voter/badge.svg)](https://docs.rs/simple-voter)    |
-| `@tribecahq/tribeca-sdk` | TypeScript SDK for Tribeca                                                                                  | [![npm](https://img.shields.io/npm/v/@tribecahq/tribeca-sdk.svg)](https://www.npmjs.com/package/@tribecahq/tribeca-sdk) | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://docs.quarry.so/ts/) |
+| Package                  | Description                                                                                                               | Version                                                                                                                 | Docs                                                                                  |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| `govern`                 | Handles proposals, voting, and queueing of transactions into a [Smart Wallet](https://docs.tribeca.so/goki/smart-wallet). | [![Crates.io](https://img.shields.io/crates/v/govern)](https://crates.io/crates/govern)                                 | [![Docs.rs](https://docs.rs/govern/badge.svg)](https://docs.rs/govern)                |
+| `locked-voter`           | Voter which locks up governance tokens for a user-provided duration in exchange for increased voting power.               | [![crates](https://img.shields.io/crates/v/locked-voter)](https://crates.io/crates/locked-voter)                        | [![Docs.rs](https://docs.rs/locked-voter/badge.svg)](https://docs.rs/locked-voter)    |
+| `simple-voter`           | A simple Tribeca voter program where 1 token = 1 vote.                                                                    | [![crates](https://img.shields.io/crates/v/simple-voter)](https://crates.io/crates/simple-voter)                        | [![Docs.rs](https://docs.rs/simple-voter/badge.svg)](https://docs.rs/simple-voter)    |
+| `@tribecahq/tribeca-sdk` | TypeScript SDK for Tribeca                                                                                                | [![npm](https://img.shields.io/npm/v/@tribecahq/tribeca-sdk.svg)](https://www.npmjs.com/package/@tribecahq/tribeca-sdk) | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://docs.quarry.so/ts/) |
 
 ## Addresses
 

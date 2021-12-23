@@ -1,4 +1,4 @@
-//! Handles proposal creation, lifecycle, voting, and execution.
+//! Handles proposals, voting, and queueing of transactions into a [Smart Wallet](https://docs.tribeca.so/goki/smart-wallet).
 #![deny(rustdoc::all)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
