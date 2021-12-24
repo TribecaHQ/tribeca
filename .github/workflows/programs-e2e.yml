@@ -91,15 +91,19 @@ jobs:
 
       # Install Solana
       - name: Cache Solana binaries
+        id: solana-cache
         uses: actions/cache@v2
         with:
           path: |
             ~/.cache/solana
             ~/.local/share/solana/install
-          key: ${{ runner.os }}-solana-${{ env.SOLANA_VERSION }}
+          key: ${{ runner.os }}-${{ env.SOLANA_VERSION }}
       - name: Install Solana
+        if: steps.solana-cache.outputs.cache-hit != 'true'
         run: |
           nix shell .#ci --command solana-install init ${{ env.SOLANA_VERSION }}
+      - name: Setup Solana Path
+        run: |
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
           export PATH="/home/runner/.local/share/solana/install/active_release/bin:$PATH"
           solana --version
