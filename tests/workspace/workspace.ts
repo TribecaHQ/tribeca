@@ -1,5 +1,3 @@
-import "chai-bn";
-
 import type { GokiSDK } from "@gokiprotocol/client";
 import type { SmartWalletWrapper } from "@gokiprotocol/client/dist/cjs/wrappers/smartWallet";
 import type { Idl } from "@project-serum/anchor";
