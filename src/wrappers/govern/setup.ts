@@ -19,7 +19,8 @@ export const createGovernorWithElectorate = async ({
   gokiSDK,
   owners = [sdk.provider.wallet.publicKey],
   governanceParameters = DEFAULT_GOVERNANCE_PARAMETERS,
-  baseKP = Keypair.generate(),
+  govBaseKP = Keypair.generate(),
+  smartWalletBaseKP = Keypair.generate(),
 }: {
   createElectorate: (
     governor: PublicKey
@@ -31,7 +32,11 @@ export const createGovernorWithElectorate = async ({
   /**
    * Base of the governor.
    */
-  baseKP?: Keypair;
+  govBaseKP?: Keypair;
+  /**
+   * Base of the smart wallet.
+   */
+  smartWalletBaseKP?: Keypair;
 }): Promise<{
   governorWrapper: GovernorWrapper;
   smartWalletWrapper: SmartWalletWrapper;
@@ -41,7 +46,7 @@ export const createGovernorWithElectorate = async ({
     tx: TransactionEnvelope;
   }[];
 }> => {
-  const [governor] = await findGovernorAddress(baseKP.publicKey);
+  const [governor] = await findGovernorAddress(govBaseKP.publicKey);
 
   const createTXs: {
     title: string;
@@ -52,6 +57,7 @@ export const createGovernorWithElectorate = async ({
     owners: [...owners, governor],
     threshold: new BN(2),
     numOwners: 3,
+    base: smartWalletBaseKP,
   });
   createTXs.push({
     title: "Create Smart Wallet",
@@ -65,7 +71,7 @@ export const createGovernorWithElectorate = async ({
   const { wrapper: governorWrapper, tx: tx2 } = await sdk.govern.createGovernor(
     {
       ...governanceParameters,
-      baseKP,
+      baseKP: govBaseKP,
       electorate,
       smartWallet: smartWalletWrapper.key,
     }
