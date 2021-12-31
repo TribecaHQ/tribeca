@@ -29,6 +29,7 @@ export const createLocker = async ({
   lockerParams = DEFAULT_LOCKER_PARAMS,
   governorBaseKP = Keypair.generate(),
   lockerBaseKP = Keypair.generate(),
+  smartWalletBaseKP = Keypair.generate(),
 }: {
   sdk: TribecaSDK;
   gokiSDK: GokiSDK;
@@ -44,6 +45,10 @@ export const createLocker = async ({
    * Base of the governor.
    */
   lockerBaseKP?: Keypair;
+  /**
+   * Base of the smart wallet.
+   */
+  smartWalletBaseKP?: Keypair;
 }): Promise<{
   governorWrapper: GovernorWrapper;
   smartWalletWrapper: SmartWalletWrapper;
@@ -70,7 +75,8 @@ export const createLocker = async ({
     gokiSDK,
     owners,
     governanceParameters,
-    baseKP: governorBaseKP,
+    govBaseKP: governorBaseKP,
+    smartWalletBaseKP,
   });
   return {
     ...governor,
