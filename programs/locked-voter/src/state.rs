@@ -24,7 +24,7 @@ pub struct Locker {
 /// Contains parameters for the [Locker].
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct LockerParams {
-    /// TODO(michael): Docs
+    /// Whether or not the locking whitelist system is enabled.
     pub whitelist_enabled: bool,
     /// The weight of a maximum vote lock relative to the total number of tokens locked.
     /// For example, veCRV is 10 because 1 CRV locked for 4 years = 10 veCRV.
@@ -37,7 +37,9 @@ pub struct LockerParams {
     pub proposal_activation_min_votes: u64,
 }
 
-/// TODO(michael): Docs
+/// An entry in the [Locker]'s whitelist.
+///
+/// The whitelist controls which programs are allowed to stake tokens into the system.
 #[account]
 #[derive(Copy, Debug, Default)]
 pub struct LockerWhitelistEntry {

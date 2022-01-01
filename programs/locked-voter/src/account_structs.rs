@@ -96,11 +96,11 @@ pub struct Lock<'info> {
 /// Accounts for [locked_voter::exit].
 #[derive(Accounts)]
 pub struct Exit<'info> {
-    /// TODO(michael): Write docs.
+    /// The [Locker] being exited from.
     #[account(mut)]
     pub locker: Account<'info, Locker>,
 
-    /// The [Escrow] that is voting.
+    /// The [Escrow] that is being closed.
     #[account(mut, close = payer)]
     pub escrow: Account<'info, Escrow>,
 

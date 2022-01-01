@@ -40,12 +40,14 @@ pub struct LockTokens<'info> {
     #[account(mut)]
     pub escrow: Account<'info, Escrow>,
 
-    /// TODO(michael): Write docs.
+    /// [Escrow::tokens].
     #[account(mut)]
     pub escrow_tokens: Account<'info, TokenAccount>,
 
     /// Authority of the [Escrow] and of the [Self::source_tokens].
     pub escrow_owner: Signer<'info>,
+
+    /// Source of the locked tokens.
     #[account(mut)]
     pub source_tokens: Account<'info, TokenAccount>,
 
