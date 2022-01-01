@@ -49,7 +49,7 @@ impl<'info> Validate<'info> for Exit<'info> {
             now,
             self.escrow.escrow_ends_at
         );
-        invariant!(self.escrow.escrow_ends_at < now, "escrow has not ended");
+        invariant!(self.escrow.escrow_ends_at < now, EscrowNotEnded);
 
         Ok(())
     }

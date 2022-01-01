@@ -28,6 +28,7 @@ import invariant from "tiny-invariant";
 import {
   DEFAULT_LOCKER_PARAMS,
   LockedVoterErrors,
+  ONE_DAY,
   ONE_YEAR,
   TRIBECA_ADDRESSES,
 } from "../src";
@@ -188,6 +189,29 @@ describe("Locked Voter", () => {
     );
   });
 
+  it("Cannot lock duration below min stake duration", async () => {
+    user = await createUser(sdk.provider, govTokenMint);
+    const tx = await lockerW.lockTokens({
+      amount: INITIAL_MINT_AMOUNT,
+      duration: new BN(1),
+      authority: user.publicKey,
+    });
+    tx.addSigners(user);
+
+    try {
+      await tx.send();
+    } catch (e) {
+      const error = e as SendTransactionError;
+      expect(
+        error.logs
+          ?.join("/n")
+          .includes(
+            "LockupDurationTooShort: Lockup duration must at least be the min stake duration."
+          )
+      );
+    }
+  });
+
   describe("Escrow", () => {
     let user: Keypair;
 
@@ -235,7 +259,9 @@ describe("Locked Voter", () => {
         await exitTx.confirm();
       } catch (e) {
         const error = e as SendTransactionError;
-        expect(error.logs?.join("\n")).to.include("escrow has not ended");
+        expect(error.logs?.join("\n")).to.include(
+          "EscrowNotEnded: Escrow has not ended."
+        );
       }
     });
 
@@ -290,18 +316,27 @@ describe("Locked Voter", () => {
   });
 
   it("Exit escrow", async () => {
-    const { locker } = lockerW;
-    const lockTx = await lockerW.lockTokens({
+    const { governorKey } = governorW;
+    const { locker, tx } = await sdk.createLocker({
+      minStakeDuration: new BN(1),
+      proposalActivationMinVotes: INITIAL_MINT_AMOUNT,
+      governor: governorKey,
+      govTokenMint,
+    });
+    await expectTX(tx, "initialize locker").to.be.fulfilled;
+
+    const shortLockerW = await LockerWrapper.load(sdk, locker, governorKey);
+    const lockTx = await shortLockerW.lockTokens({
       amount: INITIAL_MINT_AMOUNT,
       duration: new BN(1),
       authority: user.publicKey,
     });
     lockTx.addSigners(user);
     await expectTX(lockTx, "short lock up").to.be.fulfilled;
-    await expectLockedSupply(lockerW, INITIAL_MINT_AMOUNT);
+    await expectLockedSupply(shortLockerW, INITIAL_MINT_AMOUNT);
 
-    await sleep(2000); // sleep to lockup
-    const exitTx = await lockerW.exit({ authority: user.publicKey });
+    await sleep(2500); // sleep to lockup
+    const exitTx = await shortLockerW.exit({ authority: user.publicKey });
     exitTx.addSigners(user);
     await expectTX(exitTx, "exit lock up").to.be.fulfilled;
 
@@ -322,12 +357,13 @@ describe("Locked Voter", () => {
     const tokenAccount = await getTokenAccount(sdk.provider, userATA);
     expect(tokenAccount.amount).to.bignumber.eq(INITIAL_MINT_AMOUNT);
 
-    await expectLockedSupply(lockerW, ZERO);
+    await expectLockedSupply(shortLockerW, ZERO);
   });
 
   describe("Voting", () => {
     let user: Keypair;
     let escrowW: VoteEscrow;
+
     beforeEach("lock token and activate proposal", async () => {
       user = await createUser(sdk.provider, govTokenMint);
       const lockTx = await lockerW.lockTokens({
@@ -521,7 +557,7 @@ describe("Locked Voter", () => {
       const user = await createUser(provider, govTokenMint);
       const tx = await lockerW.lockTokens({
         amount: INITIAL_MINT_AMOUNT,
-        duration: new BN(1),
+        duration: ONE_DAY,
         authority: user.publicKey,
       });
       tx.addSigners(user);

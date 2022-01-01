@@ -99,8 +99,17 @@ pub mod locked_voter {
     }
 }
 
+/// [locked_voter] errors.
 #[error]
 pub enum ErrorCode {
     #[msg("CPI caller not whitelisted to invoke lock instruction.")]
     ProgramNotWhitelisted,
+    #[msg("Lockup duration must at least be the min stake duration.")]
+    LockupDurationTooShort,
+    #[msg("Lockup duration must at most be the max stake duration.")]
+    LockupDurationTooLong,
+    #[msg("A voting escrow refresh cannot shorten the escrow time remaining.")]
+    RefreshCannotShorten,
+    #[msg("Escrow has not ended.")]
+    EscrowNotEnded,
 }

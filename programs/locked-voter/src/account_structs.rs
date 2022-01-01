@@ -78,12 +78,14 @@ pub struct Lock<'info> {
     #[account(mut)]
     pub escrow: Account<'info, Escrow>,
 
-    /// TODO(michael): Write docs.
+    /// Token account held by the [Escrow].
     #[account(mut)]
     pub escrow_tokens: Account<'info, TokenAccount>,
 
     /// Authority of the [Escrow] and [Self::source_tokens].
     pub escrow_owner: Signer<'info>,
+
+    /// The source of deposited tokens.
     #[account(mut)]
     pub source_tokens: Account<'info, TokenAccount>,
 
@@ -94,11 +96,11 @@ pub struct Lock<'info> {
 /// Accounts for [locked_voter::exit].
 #[derive(Accounts)]
 pub struct Exit<'info> {
-    /// TODO(michael): Write docs.
+    /// The [Locker] being exited from.
     #[account(mut)]
     pub locker: Account<'info, Locker>,
 
-    /// The [Escrow] that is voting.
+    /// The [Escrow] that is being closed.
     #[account(mut, close = payer)]
     pub escrow: Account<'info, Escrow>,
 

@@ -65,11 +65,11 @@ pub struct LockEvent {
     pub locker_supply: u64,
     /// Duration of lock time.
     pub duration: i64,
-    /// TODO(michael): Docs.
+    /// The previous timestamp that the [Escrow] ended at.
     pub prev_escrow_ends_at: i64,
-    /// TODO(michael): Docs.
+    /// The new [Escrow] end time.
     pub next_escrow_ends_at: i64,
-    /// TODO(michael): Docs.
+    /// The new [Escrow] start time.
     pub next_escrow_started_at: i64,
 }
 

@@ -33,8 +33,12 @@ impl<'info> Validate<'info> for SetLockerParams<'info> {
 impl<'info> Lock<'info> {
     pub fn lock(&mut self, amount: u64, duration: i64) -> ProgramResult {
         invariant!(
+            unwrap_int!(duration.to_u64()) >= self.locker.params.min_stake_duration,
+            LockupDurationTooShort
+        );
+        invariant!(
             unwrap_int!(duration.to_u64()) <= self.locker.params.max_stake_duration,
-            "max stake duration exceeded"
+            LockupDurationTooLong
         );
 
         // check that the escrow refresh is valid
@@ -50,7 +54,7 @@ impl<'info> Lock<'info> {
             );
             invariant!(
                 next_escrow_ends_at >= prev_escrow_ends_at,
-                "escrow refresh cannot shorten the escrow time remaining"
+                RefreshCannotShorten
             );
         }
 
@@ -111,7 +115,7 @@ impl<'info> Lock<'info> {
         );
         let whitelist_entry =
             Account::<LockerWhitelistEntry>::try_from(whitelist_entry_account_info)?;
-        assert_keys_eq!(whitelist_entry.locker, self.locker.key());
+        assert_keys_eq!(whitelist_entry.locker, self.locker);
         assert_keys_eq!(whitelist_entry.program_id, program_id);
 
         Ok(())
