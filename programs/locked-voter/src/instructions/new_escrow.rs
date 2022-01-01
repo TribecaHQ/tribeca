@@ -1,7 +1,7 @@
 use crate::*;
 
 impl<'info> NewEscrow<'info> {
-    /// Creates a new voter.
+    /// Creates a new [Escrow].
     pub fn new_escrow(&mut self, bump: u8) -> ProgramResult {
         let escrow = &mut self.escrow;
         escrow.locker = self.locker.key();
