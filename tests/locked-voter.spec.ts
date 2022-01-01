@@ -189,6 +189,29 @@ describe("Locked Voter", () => {
     );
   });
 
+  it("Cannot lock duration below min stake duration", async () => {
+    user = await createUser(sdk.provider, govTokenMint);
+    const tx = await lockerW.lockTokens({
+      amount: INITIAL_MINT_AMOUNT,
+      duration: new BN(1),
+      authority: user.publicKey,
+    });
+    tx.addSigners(user);
+
+    try {
+      await tx.send();
+    } catch (e) {
+      const error = e as SendTransactionError;
+      expect(
+        error.logs
+          ?.join("/n")
+          .includes(
+            "LockupDurationTooShort: Lockup duration must at least be the min stake duration."
+          )
+      );
+    }
+  });
+
   describe("Escrow", () => {
     let user: Keypair;
 
@@ -312,7 +335,7 @@ describe("Locked Voter", () => {
     await expectTX(lockTx, "short lock up").to.be.fulfilled;
     await expectLockedSupply(shortLockerW, INITIAL_MINT_AMOUNT);
 
-    await sleep(2000); // sleep to lockup
+    await sleep(2500); // sleep to lockup
     const exitTx = await shortLockerW.exit({ authority: user.publicKey });
     exitTx.addSigners(user);
     await expectTX(exitTx, "exit lock up").to.be.fulfilled;
