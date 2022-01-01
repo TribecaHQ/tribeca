@@ -110,4 +110,6 @@ pub enum ErrorCode {
     LockupDurationTooLong,
     #[msg("A voting escrow refresh cannot shorten the escrow time remaining.")]
     RefreshCannotShorten,
+    #[msg("Escrow has not ended.")]
+    EscrowNotEnded,
 }
