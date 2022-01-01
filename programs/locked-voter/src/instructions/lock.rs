@@ -33,8 +33,12 @@ impl<'info> Validate<'info> for SetLockerParams<'info> {
 impl<'info> Lock<'info> {
     pub fn lock(&mut self, amount: u64, duration: i64) -> ProgramResult {
         invariant!(
+            unwrap_int!(duration.to_u64()) >= self.locker.params.min_stake_duration,
+            LockupDurationTooShort
+        );
+        invariant!(
             unwrap_int!(duration.to_u64()) <= self.locker.params.max_stake_duration,
-            "max stake duration exceeded"
+            LockupDurationTooLong
         );
 
         // check that the escrow refresh is valid
