@@ -112,11 +112,11 @@ pub struct LockerSetParamsEvent {
 #[event]
 /// Event called in [locked_voter::set_vote_delegate].
 pub struct SetVoteDelegateEvent {
-    /// The owner of the [locked_voter::Escrow].
+    /// The owner of the Escrow.
     #[index]
     pub escrow_owner: Pubkey,
-    /// The old [locked_voter::Escrow] delegate.
+    /// The old escrow delegate.
     pub old_delegate: Pubkey,
-    /// The new [locked_voter::Escrow] delegate.
+    /// The new escrow delegate.
     pub new_delegate: Pubkey,
 }
