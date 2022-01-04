@@ -175,7 +175,7 @@ pub struct CreateProposalMeta<'info> {
     pub system_program: Program<'info, System>,
 }
 
-/// Accounts for [govern::set_governance_params].
+/// Accounts for [govern::set_governance_params] and [govern::set_electorate].
 #[derive(Accounts)]
 pub struct SetGovernanceParams<'info> {
     /// The [Governor]

@@ -217,6 +217,24 @@ pub mod govern {
         Ok(())
     }
 
+    /// Sets the electorate of the [Governor].
+    #[access_control(ctx.accounts.validate())]
+    pub fn set_electorate(
+        ctx: Context<SetGovernanceParams>,
+        new_electorate: Pubkey,
+    ) -> ProgramResult {
+        let prev_electorate = ctx.accounts.governor.electorate;
+        ctx.accounts.governor.electorate = new_electorate;
+
+        emit!(GovernorSetElectorateEvent {
+            governor: ctx.accounts.governor.key(),
+            prev_electorate,
+            new_electorate,
+        });
+
+        Ok(())
+    }
+
     /// Creates a [ProposalMeta].
     #[access_control(ctx.accounts.validate())]
     pub fn create_proposal_meta(

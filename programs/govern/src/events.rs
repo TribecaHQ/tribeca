@@ -117,3 +117,15 @@ pub struct GovernorSetParamsEvent {
     /// New [GovernanceParameters].
     pub params: GovernanceParameters,
 }
+
+/// Event called in [govern::set_electorate].
+#[event]
+pub struct GovernorSetElectorateEvent {
+    /// The governor being created.
+    #[index]
+    pub governor: Pubkey,
+    /// Previous [Governor::electorate].
+    pub prev_electorate: Pubkey,
+    /// New [Governor::electorate].
+    pub new_electorate: Pubkey,
+}
