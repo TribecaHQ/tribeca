@@ -6,4 +6,5 @@ mod exit;
 mod lock;
 mod new_escrow;
 mod new_locker;
+mod set_vote_delegate;
 mod whitelist;

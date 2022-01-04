@@ -75,6 +75,11 @@ pub mod locked_voter {
         ctx.accounts.cast_vote(side)
     }
 
+    /// Set vote escrow.
+    pub fn set_vote_delegate(ctx: Context<SetVoteDelegate>) -> ProgramResult {
+        ctx.accounts.set_vote_delegate()
+    }
+
     /// Set locker params.
     #[access_control(ctx.accounts.validate())]
     pub fn set_locker_params(ctx: Context<SetLockerParams>, params: LockerParams) -> ProgramResult {

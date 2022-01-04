@@ -162,6 +162,18 @@ pub struct CastVote<'info> {
     pub govern_program: Program<'info, govern::program::Govern>,
 }
 
+/// Accounts for [locked_voter::set_vote_delegate].
+#[derive(Accounts)]
+pub struct SetVoteDelegate<'info> {
+    /// The [Escrow].
+    #[account(mut)]
+    pub escrow: Account<'info, Escrow>,
+    /// The owner of the [Escrow].
+    pub escrow_owner: Signer<'info>,
+    /// Vote delegate of the [Escrow].
+    pub vote_delegate: UncheckedAccount<'info>,
+}
+
 /// Accounts for [locked_voter::cast_vote].
 #[derive(Accounts)]
 pub struct SetLockerParams<'info> {
