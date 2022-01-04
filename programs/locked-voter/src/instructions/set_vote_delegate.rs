@@ -2,7 +2,14 @@ use crate::*;
 
 impl<'info> SetVoteDelegate<'info> {
     pub fn set_vote_delegate(&mut self, new_delegate: Pubkey) -> ProgramResult {
+        let old_delegate = self.escrow.vote_delegate;
         self.escrow.vote_delegate = new_delegate;
+
+        emit!(SetVoteDelegateEvent {
+            escrow_owner: self.escorw.owner,
+            old_delegate,
+            new_delegate,
+        });
 
         Ok(())
     }
