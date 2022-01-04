@@ -251,6 +251,19 @@ describe("Locked Voter", () => {
       expect(tokenAccount.amount).to.bignumber.eq(INITIAL_MINT_AMOUNT);
     });
 
+    it("Set vote delegate", async () => {
+      const expectedDelegate = Keypair.generate().publicKey;
+      const tx = await lockerW.setVoteDelegate(
+        expectedDelegate,
+        user.publicKey
+      );
+      tx.addSigners(user);
+      await expectTX(tx).to.be.fulfilled;
+
+      const escrowData = await lockerW.fetchEscrowByAuthority(user.publicKey);
+      expect(escrowData.voteDelegate).to.eqAddress(expectedDelegate);
+    });
+
     it("Exit should fail", async () => {
       const exitTx = await lockerW.exit({ authority: user.publicKey });
       exitTx.addSigners(user);

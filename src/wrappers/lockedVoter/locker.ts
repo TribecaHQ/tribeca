@@ -70,6 +70,13 @@ export class LockerWrapper {
     return await this.program.account.escrow.fetch(escrowKey);
   }
 
+  async fetchEscrowByAuthority(
+    authority: PublicKey = this.sdk.provider.wallet.publicKey
+  ): Promise<EscrowData> {
+    const [escrowKey] = await findEscrowAddress(this.locker, authority);
+    return this.fetchEscrow(escrowKey);
+  }
+
   /**
    * Fetches the data of the locker.
    * @returns
