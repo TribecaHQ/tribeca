@@ -6,7 +6,7 @@ impl<'info> SetVoteDelegate<'info> {
         self.escrow.vote_delegate = new_delegate;
 
         emit!(SetVoteDelegateEvent {
-            escrow_owner: self.escorw.owner,
+            escrow_owner: self.escrow.owner,
             old_delegate,
             new_delegate,
         });
