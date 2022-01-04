@@ -262,11 +262,27 @@ export class LockerWrapper {
       })
     );
 
-    if (reason) {
+    if (reason?.length) {
       ixs.push(createMemoInstruction(reason, [authority]));
     }
 
     return new TransactionEnvelope(this.sdk.provider, ixs);
+  }
+
+  async setVoteDelegate(
+    newDelegate: PublicKey,
+    authority: PublicKey = this.sdk.provider.wallet.publicKey
+  ): Promise<TransactionEnvelope> {
+    const [escrow] = await findEscrowAddress(this.locker, authority);
+
+    return new TransactionEnvelope(this.sdk.provider, [
+      this.program.instruction.setVoteDelegate(newDelegate, {
+        accounts: {
+          escrow,
+          escrowOwner: authority,
+        },
+      }),
+    ]);
   }
 
   async createApproveProgramLockPrivilegeIx(

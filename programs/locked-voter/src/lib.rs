@@ -76,8 +76,8 @@ pub mod locked_voter {
     }
 
     /// Set vote escrow.
-    pub fn set_vote_delegate(ctx: Context<SetVoteDelegate>) -> ProgramResult {
-        ctx.accounts.set_vote_delegate()
+    pub fn set_vote_delegate(ctx: Context<SetVoteDelegate>, new_delegate: Pubkey) -> ProgramResult {
+        ctx.accounts.set_vote_delegate(new_delegate)
     }
 
     /// Set locker params.

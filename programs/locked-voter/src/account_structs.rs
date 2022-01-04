@@ -170,8 +170,6 @@ pub struct SetVoteDelegate<'info> {
     pub escrow: Account<'info, Escrow>,
     /// The owner of the [Escrow].
     pub escrow_owner: Signer<'info>,
-    /// Vote delegate of the [Escrow].
-    pub vote_delegate: UncheckedAccount<'info>,
 }
 
 /// Accounts for [locked_voter::cast_vote].
