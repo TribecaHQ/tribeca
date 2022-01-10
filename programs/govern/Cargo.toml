@@ -24,7 +24,7 @@ anchor-lang = ">=0.17"
 anchor-spl = ">=0.17"
 num-traits = "0.2"
 smart-wallet = { version = "^0.5", features = ["cpi"] }
-vipers = "1.5.5"
+vipers = "1.5.7"
 
 [dev-dependencies]
 proptest = { version = "1.0" }
