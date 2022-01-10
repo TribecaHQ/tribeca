@@ -1,6 +1,6 @@
 use crate::token_record_signer_seeds;
 use crate::TokenContext;
-use anchor_lang::{prelude::ProgramResult, CpiContext, ToAccountInfo};
+use anchor_lang::prelude::*;
 use anchor_spl::token;
 
 impl TokenContext<'_> {
