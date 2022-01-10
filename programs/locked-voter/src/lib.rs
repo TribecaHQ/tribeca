@@ -9,14 +9,13 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 use govern::Governor;
 use vipers::*;
 
-pub mod account_structs;
 mod events;
 mod instructions;
 pub mod locker;
 mod state;
 
-use account_structs::*;
 pub use events::*;
+pub use instruction::*;
 pub use state::*;
 
 declare_id!("LocktDzaV1W2Bm9DeZeiyz4J9zs4fRqNiYqQyracRXw");

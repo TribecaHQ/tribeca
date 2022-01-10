@@ -1,5 +1,36 @@
 use crate::*;
 
+/// Accounts for [locked_voter::new_escrow].
+#[derive(Accounts)]
+#[instruction(bump: u8)]
+pub struct NewEscrow<'info> {
+    /// [Locker].
+    pub locker: Account<'info, Locker>,
+
+    /// [Escrow].
+    #[account(
+        init,
+        seeds = [
+            b"Escrow".as_ref(),
+            locker.key().to_bytes().as_ref(),
+            escrow_owner.key().to_bytes().as_ref()
+        ],
+        bump = bump,
+        payer = payer
+    )]
+    pub escrow: Account<'info, Escrow>,
+
+    /// Authority of the [Escrow] to be created.
+    pub escrow_owner: UncheckedAccount<'info>,
+
+    /// Payer of the initialization.
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    /// System program.
+    pub system_program: Program<'info, System>,
+}
+
 impl<'info> NewEscrow<'info> {
     /// Creates a new [Escrow].
     pub fn new_escrow(&mut self, bump: u8) -> ProgramResult {

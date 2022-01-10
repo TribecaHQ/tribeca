@@ -3,6 +3,44 @@ use anchor_lang::solana_program::sysvar::instructions::get_instruction_relative;
 use anchor_spl::token;
 use num_traits::ToPrimitive;
 
+/// Accounts for [locked_voter::lock].
+#[derive(Accounts)]
+pub struct Lock<'info> {
+    /// [Locker].
+    #[account(mut)]
+    pub locker: Account<'info, Locker>,
+
+    /// [Escrow].
+    #[account(mut)]
+    pub escrow: Account<'info, Escrow>,
+
+    /// Token account held by the [Escrow].
+    #[account(mut)]
+    pub escrow_tokens: Account<'info, TokenAccount>,
+
+    /// Authority of the [Escrow] and [Self::source_tokens].
+    pub escrow_owner: Signer<'info>,
+
+    /// The source of deposited tokens.
+    #[account(mut)]
+    pub source_tokens: Account<'info, TokenAccount>,
+
+    /// Token program.
+    pub token_program: Program<'info, Token>,
+}
+
+/// Accounts for [locked_voter::set_locker_params].
+#[derive(Accounts)]
+pub struct SetLockerParams<'info> {
+    /// The [Locker].
+    #[account(mut)]
+    pub locker: Account<'info, Locker>,
+    /// The [Governor].
+    pub governor: Account<'info, Governor>,
+    /// The smart wallet on the [Governor].
+    pub smart_wallet: Signer<'info>,
+}
+
 impl<'info> SetLockerParams<'info> {
     pub fn set_locker_params(&mut self, params: LockerParams) -> ProgramResult {
         let prev_params = self.locker.params;
