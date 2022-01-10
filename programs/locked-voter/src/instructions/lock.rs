@@ -170,3 +170,40 @@ impl<'info> Validate<'info> for Lock<'info> {
         Ok(())
     }
 }
+
+#[event]
+/// Event called in [locked_voter::lock].
+pub struct LockEvent {
+    /// The locker of the [Escrow]
+    #[index]
+    pub locker: Pubkey,
+    /// The owner of the [Escrow].
+    #[index]
+    pub escrow_owner: Pubkey,
+    /// Mint of the token that for the [Locker].
+    pub token_mint: Pubkey,
+    /// Amount of tokens locked.
+    pub amount: u64,
+    /// Amount of tokens locked inside the [Locker].
+    pub locker_supply: u64,
+    /// Duration of lock time.
+    pub duration: i64,
+    /// The previous timestamp that the [Escrow] ended at.
+    pub prev_escrow_ends_at: i64,
+    /// The new [Escrow] end time.
+    pub next_escrow_ends_at: i64,
+    /// The new [Escrow] start time.
+    pub next_escrow_started_at: i64,
+}
+
+/// Event called in [locked_voter::set_locker_params].
+#[event]
+pub struct LockerSetParamsEvent {
+    /// The [Locker].
+    #[index]
+    pub locker: Pubkey,
+    /// Previous [LockerParams].
+    pub prev_params: LockerParams,
+    /// New [LockerParams].
+    pub params: LockerParams,
+}

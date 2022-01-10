@@ -9,12 +9,10 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 use govern::{Governor, Proposal, Vote};
 use vipers::*;
 
-mod events;
 mod instructions;
 pub mod locker;
 mod state;
 
-pub use events::*;
 pub use instructions::*;
 pub use state::*;
 

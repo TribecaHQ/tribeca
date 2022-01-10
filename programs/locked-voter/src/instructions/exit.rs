@@ -82,3 +82,20 @@ impl<'info> Validate<'info> for Exit<'info> {
         Ok(())
     }
 }
+
+#[event]
+/// Event called in [locked_voter::exit].
+pub struct ExitEscrowEvent {
+    /// The owner of the [Escrow].
+    #[index]
+    pub escrow_owner: Pubkey,
+    /// The locker for the [Escrow].
+    #[index]
+    pub locker: Pubkey,
+    /// Timestamp for the event.
+    pub timestamp: i64,
+    /// The amount of tokens locked inside the [Locker].
+    pub locker_supply: u64,
+    /// The amount released from the [Escrow].
+    pub released_amount: u64,
+}

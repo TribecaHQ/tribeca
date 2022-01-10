@@ -65,3 +65,18 @@ impl<'info> Validate<'info> for NewEscrow<'info> {
         Ok(())
     }
 }
+
+#[event]
+/// Event called in [locked_voter::new_escrow].
+pub struct NewEscrowEvent {
+    /// The [Escrow] being created.
+    pub escrow: Pubkey,
+    /// The owner of the [Escrow].
+    #[index]
+    pub escrow_owner: Pubkey,
+    /// The locker for the [Escrow].
+    #[index]
+    pub locker: Pubkey,
+    /// Timestamp for the event.
+    pub timestamp: i64,
+}

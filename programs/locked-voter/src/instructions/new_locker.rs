@@ -59,3 +59,17 @@ impl<'info> Validate<'info> for NewLocker<'info> {
         Ok(())
     }
 }
+
+#[event]
+/// Event called in [locked_voter::new_locker].
+pub struct NewLockerEvent {
+    /// The governor for the [Locker].
+    #[index]
+    pub governor: Pubkey,
+    /// The [Locker] being created.
+    pub locker: Pubkey,
+    /// Mint of the token that can be used to join the [Locker].
+    pub token_mint: Pubkey,
+    /// New [LockerParams].
+    pub params: LockerParams,
+}

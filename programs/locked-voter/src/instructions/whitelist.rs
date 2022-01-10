@@ -111,3 +111,27 @@ impl<'info> Validate<'info> for RevokeProgramLockPrivilege<'info> {
         Ok(())
     }
 }
+
+#[event]
+/// Event called in [locked_voter::approve_program_lock_privilege].
+pub struct ApproveLockPrivilegeEvent {
+    /// The [Locker].
+    #[index]
+    pub locker: Pubkey,
+    /// ProgramId approved to make CPI calls to [locked_voter::lock].
+    pub program_id: Pubkey,
+    /// Timestamp of the event.
+    pub timestamp: i64,
+}
+
+#[event]
+/// Event called in [locked_voter::revoke_program_lock_privilege].
+pub struct RevokeLockPrivilegeEvent {
+    /// The [Locker].
+    #[index]
+    pub locker: Pubkey,
+    /// ProgramId approved to make CPI calls to [locked_voter::lock].
+    pub program_id: Pubkey,
+    /// Timestamp of the event.
+    pub timestamp: i64,
+}
