@@ -1,6 +1,29 @@
 use crate::*;
 use govern::ProposalState;
 
+/// Accounts for [locked_voter::cast_vote].
+#[derive(Accounts)]
+pub struct CastVote<'info> {
+    /// The [Locker].
+    pub locker: Account<'info, Locker>,
+    /// The [Escrow] that is voting.
+    pub escrow: Account<'info, Escrow>,
+    /// Vote delegate of the [Escrow].
+    pub vote_delegate: Signer<'info>,
+
+    /// The [Proposal] being voted on.
+    #[account(mut)]
+    pub proposal: Account<'info, Proposal>,
+    /// The [Vote].
+    #[account(mut)]
+    pub vote: Account<'info, Vote>,
+
+    /// The [Governor].
+    pub governor: Account<'info, Governor>,
+    /// The [govern] program.
+    pub govern_program: Program<'info, govern::program::Govern>,
+}
+
 impl<'info> CastVote<'info> {
     pub fn cast_vote(&mut self, side: u8) -> ProgramResult {
         let voting_power = self.future_voting_power()?;
