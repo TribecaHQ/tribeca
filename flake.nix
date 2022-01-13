@@ -14,11 +14,14 @@
       "x86_64-darwin"
     ] (system:
       let
-        pkgs = import nixpkgs { inherit system; };
-        saber-pkgs = saber-overlay.packages.${system};
-        ci = import ./ci.nix { inherit pkgs saber-pkgs; };
+        pkgs = import nixpkgs { inherit system; }
+          // saber-overlay.packages.${system};
+        ci = import ./ci.nix { inherit pkgs; };
       in {
-        packages.ci = ci;
+        packages = {
+          inherit ci;
+          inherit (pkgs) anchor yarn cargo-workspaces solana-install;
+        };
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [ ci rustup cargo-deps gh ];
         };

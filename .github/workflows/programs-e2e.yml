@@ -47,7 +47,7 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-modules-
 
       - name: Install Yarn dependencies
         run: yarn install
@@ -101,7 +101,7 @@ jobs:
       - name: Install Solana
         if: steps.solana-cache.outputs.cache-hit != 'true'
         run: |
-          nix shell .#ci --command solana-install init ${{ env.SOLANA_VERSION }}
+          nix shell .#solana-install --command solana-install init ${{ env.SOLANA_VERSION }}
       - name: Setup Solana Path
         run: |
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
@@ -110,7 +110,7 @@ jobs:
 
       # Run build
       - name: Build program
-        run: nix shell .#ci --command anchor build
+        run: nix shell .#anchor --command anchor build
       - name: Pull SmartWallet Binary
         run: ./scripts/pull-smart-wallet.sh
 
@@ -123,9 +123,9 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-modules-
 
-      - run: nix shell .#ci --command yarn install
+      - run: nix shell .#yarn --command yarn install
       - name: Generate IDL types
         run: nix shell .#ci --command yarn idl:generate:nolint
       - run: yarn build
