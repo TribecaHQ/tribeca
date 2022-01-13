@@ -1,5 +1,23 @@
 use crate::*;
 
+/// Accounts for [locked_voter::activate_proposal].
+#[derive(Accounts)]
+pub struct ActivateProposal<'info> {
+    /// The [Locker].
+    pub locker: Account<'info, Locker>,
+    /// The [Governor].
+    pub governor: Account<'info, Governor>,
+    /// The [Proposal].
+    #[account(mut)]
+    pub proposal: Account<'info, Proposal>,
+    /// The user's [Escrow].
+    pub escrow: Account<'info, Escrow>,
+    /// The [Escrow]'s owner.
+    pub escrow_owner: Signer<'info>,
+    /// The [govern] program.
+    pub govern_program: Program<'info, govern::program::Govern>,
+}
+
 impl<'info> ActivateProposal<'info> {
     /// Activates the proposal.
     pub fn activate_proposal(&mut self) -> ProgramResult {
