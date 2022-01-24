@@ -263,6 +263,25 @@ describe("Locked Voter", () => {
       const escrowData = await lockerW.fetchEscrowByAuthority(user.publicKey);
       expect(escrowData.voteDelegate).to.eqAddress(expectedDelegate);
     });
+  
+      
+    it("Set vote delegate access control test", async () => {
+      const expectedDelegate = Keypair.generate().publicKey;
+      const incorrectPubKey = Keypair.generate().publicKey;
+      const tx = await lockerW.setVoteDelegate(
+        expectedDelegate,
+        incorrectPubKey
+      );
+      tx.addSigners(user);
+      try {
+        await expectTX(tx).to.be.fulfilled;
+      } catch (e) {
+        const error = e as Error;
+        expect(error.message).to.equal(
+          ``
+        );
+      }
+    });
 
     it("Exit should fail", async () => {
       const exitTx = await lockerW.exit({ authority: user.publicKey });
