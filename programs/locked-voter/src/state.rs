@@ -76,15 +76,6 @@ pub struct Escrow {
     pub vote_delegate: Pubkey,
 }
 
-/// Accounts for set_vote_delegate
-#[derive(Accounts)]
-pub struct SetVoteDelegate<'info> {
-    /// The [Escrow].
-    #[account(mut)]
-    pub escrow: Account<'info, Escrow>,
-    /// The owner of the [Escrow].
-    pub escrow_owner: Signer<'info>,
-}
 
 impl Escrow {
     /// Gets the amount of voting power the [Escrow] will have at the given time.
