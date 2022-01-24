@@ -70,6 +70,13 @@ export class LockerWrapper {
     return await this.program.account.escrow.fetch(escrowKey);
   }
 
+  async fetchEscrowByAuthority(
+    authority: PublicKey = this.sdk.provider.wallet.publicKey
+  ): Promise<EscrowData> {
+    const [escrowKey] = await findEscrowAddress(this.locker, authority);
+    return this.fetchEscrow(escrowKey);
+  }
+
   /**
    * Fetches the data of the locker.
    * @returns
@@ -262,11 +269,27 @@ export class LockerWrapper {
       })
     );
 
-    if (reason) {
+    if (reason?.length) {
       ixs.push(createMemoInstruction(reason, [authority]));
     }
 
     return new TransactionEnvelope(this.sdk.provider, ixs);
+  }
+
+  async setVoteDelegate(
+    newDelegate: PublicKey,
+    authority: PublicKey = this.sdk.provider.wallet.publicKey
+  ): Promise<TransactionEnvelope> {
+    const [escrow] = await findEscrowAddress(this.locker, authority);
+
+    return new TransactionEnvelope(this.sdk.provider, [
+      this.program.instruction.setVoteDelegate(newDelegate, {
+        accounts: {
+          escrow,
+          escrowOwner: authority,
+        },
+      }),
+    ]);
   }
 
   async createApproveProgramLockPrivilegeIx(

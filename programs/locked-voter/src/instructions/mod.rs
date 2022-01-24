@@ -6,6 +6,7 @@ pub mod exit;
 pub mod lock;
 pub mod new_escrow;
 pub mod new_locker;
+pub mod set_vote_delegate;
 pub mod whitelist;
 
 pub use activate_proposal::*;
@@ -14,4 +15,5 @@ pub use exit::*;
 pub use lock::*;
 pub use new_escrow::*;
 pub use new_locker::*;
+pub use set_vote_delegate::*;
 pub use whitelist::*;
