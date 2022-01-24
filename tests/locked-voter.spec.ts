@@ -250,7 +250,7 @@ describe("Locked Voter", () => {
       const tokenAccount = await getTokenAccount(sdk.provider, escrowATA);
       expect(tokenAccount.amount).to.bignumber.eq(INITIAL_MINT_AMOUNT);
     });
-  
+
     it("Set vote delegate", async () => {
       const expectedDelegate = Keypair.generate().publicKey;
       const tx = await lockerW.setVoteDelegate(
@@ -263,24 +263,16 @@ describe("Locked Voter", () => {
       const escrowData = await lockerW.fetchEscrowByAuthority(user.publicKey);
       expect(escrowData.voteDelegate).to.eqAddress(expectedDelegate);
     });
-  
-      
+
     it("Set vote delegate access control test", async () => {
       const expectedDelegate = Keypair.generate().publicKey;
-      const incorrectPubKey = Keypair.generate().publicKey;
+      const incorrectAccount = Keypair.generate();
       const tx = await lockerW.setVoteDelegate(
         expectedDelegate,
-        incorrectPubKey
+        incorrectAccount.publicKey
       );
-      tx.addSigners(user);
-      try {
-        await expectTX(tx).to.be.fulfilled;
-      } catch (e) {
-        const error = e as Error;
-        expect(error.message).to.equal(
-          ``
-        );
-      }
+      tx.addSigners(incorrectAccount);
+      await expectTX(tx).to.be.rejectedWith(/0xbc4/);
     });
 
     it("Exit should fail", async () => {
