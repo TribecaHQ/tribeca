@@ -72,7 +72,7 @@ pub mod locked_voter {
         ctx.accounts.cast_vote(side)
     }
 
-    /// Delegate escrow vote
+    /// Delegate escrow vote.
     #[access_control(ctx.accounts.validate())]
     pub fn set_vote_delegate(ctx: Context<SetVoteDelegate>, new_delegate: Pubkey) -> ProgramResult {
         ctx.accounts.set_vote_delegate(new_delegate)
