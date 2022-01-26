@@ -9,3 +9,23 @@ pub struct CancelProposal<'info> {
     /// The [Proposal::proposer].
     pub proposer: Signer<'info>,
 }
+
+impl<'info> Validate<'info> for CancelProposal<'info> {
+    fn validate(&self) -> ProgramResult {
+        assert_keys_eq!(
+            self.proposer,
+            self.proposal.proposer,
+            "proposer should match recorded"
+        );
+        assert_keys_eq!(
+            self.governor,
+            self.proposal.governor,
+            "proposal should be under the governor"
+        );
+        invariant!(
+            self.proposal.get_state()? == ProposalState::Draft,
+            ProposalNotDraft
+        );
+        Ok(())
+    }
+}

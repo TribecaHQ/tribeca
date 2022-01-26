@@ -25,3 +25,9 @@ pub struct NewVote<'info> {
     /// System program.
     pub system_program: Program<'info, System>,
 }
+
+impl<'info> Validate<'info> for NewVote<'info> {
+    fn validate(&self) -> ProgramResult {
+        Ok(())
+    }
+}
