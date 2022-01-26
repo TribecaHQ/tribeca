@@ -30,47 +30,6 @@ declare_id!("Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw");
 pub mod govern {
     use super::*;
 
-    /// Creates a [Proposal].
-    /// This may be called by anyone, since the [Proposal] does not do anything until
-    /// it is activated in [activate_proposal].
-    #[access_control(ctx.accounts.validate())]
-    pub fn create_proposal(
-        ctx: Context<CreateProposal>,
-        bump: u8,
-        instructions: Vec<ProposalInstruction>,
-    ) -> ProgramResult {
-        let governor = &mut ctx.accounts.governor;
-
-        let proposal = &mut ctx.accounts.proposal;
-        proposal.governor = governor.key();
-        proposal.index = governor.proposal_count;
-        proposal.bump = bump;
-
-        proposal.proposer = ctx.accounts.proposer.key();
-
-        proposal.quorum_votes = governor.params.quorum_votes;
-        proposal.created_at = Clock::get()?.unix_timestamp;
-        proposal.canceled_at = 0;
-        proposal.activated_at = 0;
-        proposal.voting_ends_at = 0;
-
-        proposal.queued_at = 0;
-        proposal.queued_transaction = Pubkey::default();
-
-        proposal.instructions = instructions.clone();
-
-        governor.proposal_count += 1;
-
-        emit!(ProposalCreateEvent {
-            governor: governor.key(),
-            proposal: proposal.key(),
-            index: proposal.index,
-            instructions,
-        });
-
-        Ok(())
-    }
-
     /// Activates a proposal.
     /// Only the [Governor::electorate] may call this; that program
     /// may ensure that only certain types of users can activate proposals.

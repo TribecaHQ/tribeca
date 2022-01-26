@@ -3,12 +3,6 @@
 use crate::*;
 use vipers::{assert_keys_eq, invariant, unwrap_int, unwrap_opt, Validate};
 
-impl<'info> Validate<'info> for CreateProposal<'info> {
-    fn validate(&self) -> ProgramResult {
-        Ok(())
-    }
-}
-
 impl<'info> Validate<'info> for ActivateProposal<'info> {
     fn validate(&self) -> ProgramResult {
         assert_keys_eq!(self.governor, self.proposal.governor);
