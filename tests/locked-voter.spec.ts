@@ -267,12 +267,17 @@ describe("Locked Voter", () => {
     it("Set vote delegate access control test", async () => {
       const expectedDelegate = Keypair.generate().publicKey;
       const incorrectAccount = Keypair.generate();
-      const tx = await lockerW.setVoteDelegate(
-        expectedDelegate,
-        incorrectAccount.publicKey
-      );
+      const [escrow] = await findEscrowAddress(lockerW.locker, user.publicKey);
+      const tx = new TransactionEnvelope(lockerW.sdk.provider, [
+        lockerW.program.instruction.setVoteDelegate(expectedDelegate, {
+          accounts: {
+            escrow,
+            escrowOwner: incorrectAccount.publicKey,
+          },
+        }),
+      ]);
       tx.addSigners(incorrectAccount);
-      await expectTX(tx).to.be.rejectedWith(/0xbc4/);
+      await expectTX(tx).to.be.rejectedWith(/0x44c/);
     });
 
     it("Exit should fail", async () => {
