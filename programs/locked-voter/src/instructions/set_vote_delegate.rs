@@ -1,6 +1,5 @@
 use crate::*;
 
-
 /// Accounts for set_vote_delegate
 #[derive(Accounts)]
 pub struct SetVoteDelegate<'info> {

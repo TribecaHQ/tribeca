@@ -76,7 +76,6 @@ pub struct Escrow {
     pub vote_delegate: Pubkey,
 }
 
-
 impl Escrow {
     /// Gets the amount of voting power the [Escrow] will have at the given time.
     pub fn voting_power_at_time(&self, locker: &LockerParams, timestamp: i64) -> Option<u64> {
