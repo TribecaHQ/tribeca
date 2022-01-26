@@ -251,6 +251,35 @@ describe("Locked Voter", () => {
       expect(tokenAccount.amount).to.bignumber.eq(INITIAL_MINT_AMOUNT);
     });
 
+    it("Set vote delegate", async () => {
+      const expectedDelegate = Keypair.generate().publicKey;
+      const tx = await lockerW.setVoteDelegate(
+        expectedDelegate,
+        user.publicKey
+      );
+      tx.addSigners(user);
+      await expectTX(tx).to.be.fulfilled;
+
+      const escrowData = await lockerW.fetchEscrowByAuthority(user.publicKey);
+      expect(escrowData.voteDelegate).to.eqAddress(expectedDelegate);
+    });
+
+    it("Set vote delegate access control test", async () => {
+      const expectedDelegate = Keypair.generate().publicKey;
+      const incorrectAccount = Keypair.generate();
+      const [escrow] = await findEscrowAddress(lockerW.locker, user.publicKey);
+      const tx = new TransactionEnvelope(lockerW.sdk.provider, [
+        lockerW.program.instruction.setVoteDelegate(expectedDelegate, {
+          accounts: {
+            escrow,
+            escrowOwner: incorrectAccount.publicKey,
+          },
+        }),
+      ]);
+      tx.addSigners(incorrectAccount);
+      await expectTX(tx).to.be.rejectedWith(/0x44c/);
+    });
+
     it("Exit should fail", async () => {
       const exitTx = await lockerW.exit({ authority: user.publicKey });
       exitTx.addSigners(user);
