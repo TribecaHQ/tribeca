@@ -30,39 +30,6 @@ declare_id!("Govz1VyoyLD5BL6CSCxUJLVLsQHRwjfFj1prNsdNg5Jw");
 pub mod govern {
     use super::*;
 
-    /// Creates a [Governor].
-    #[access_control(ctx.accounts.validate())]
-    pub fn create_governor(
-        ctx: Context<CreateGovernor>,
-        bump: u8,
-        electorate: Pubkey,
-        params: GovernanceParameters,
-    ) -> ProgramResult {
-        invariant!(
-            params.timelock_delay_seconds >= 0,
-            "timelock delay must be at least 0 seconds"
-        );
-
-        let governor = &mut ctx.accounts.governor;
-        governor.base = ctx.accounts.base.key();
-        governor.bump = bump;
-
-        governor.proposal_count = 0;
-        governor.electorate = electorate;
-        governor.smart_wallet = ctx.accounts.smart_wallet.key();
-
-        governor.params = params;
-
-        emit!(GovernorCreateEvent {
-            governor: governor.key(),
-            electorate,
-            smart_wallet: ctx.accounts.smart_wallet.key(),
-            parameters: params,
-        });
-
-        Ok(())
-    }
-
     /// Creates a [Proposal].
     /// This may be called by anyone, since the [Proposal] does not do anything until
     /// it is activated in [activate_proposal].

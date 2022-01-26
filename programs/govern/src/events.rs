@@ -2,20 +2,6 @@
 
 use crate::*;
 
-/// Event called in [govern::create_governor].
-#[event]
-pub struct GovernorCreateEvent {
-    /// The governor being created.
-    #[index]
-    pub governor: Pubkey,
-    /// The electorate of the created [Governor].
-    pub electorate: Pubkey,
-    /// The [SmartWallet].
-    pub smart_wallet: Pubkey,
-    /// Governance parameters.
-    pub parameters: GovernanceParameters,
-}
-
 /// Event called in [govern::create_proposal].
 #[event]
 pub struct ProposalCreateEvent {

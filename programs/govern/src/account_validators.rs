@@ -3,17 +3,6 @@
 use crate::*;
 use vipers::{assert_keys_eq, invariant, unwrap_int, unwrap_opt, Validate};
 
-impl<'info> Validate<'info> for CreateGovernor<'info> {
-    fn validate(&self) -> ProgramResult {
-        invariant!(
-            self.smart_wallet.owners.contains(&self.governor.key()),
-            GovernorNotFound
-        );
-
-        Ok(())
-    }
-}
-
 impl<'info> Validate<'info> for CreateProposal<'info> {
     fn validate(&self) -> ProgramResult {
         Ok(())

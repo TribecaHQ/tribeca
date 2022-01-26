@@ -2,32 +2,6 @@
 
 use crate::*;
 
-/// Accounts for [govern::create_governor].
-#[derive(Accounts)]
-#[instruction(bump: u8)]
-pub struct CreateGovernor<'info> {
-    /// Base of the [Governor] key.
-    pub base: Signer<'info>,
-    /// Governor.
-    #[account(
-        init,
-        seeds = [
-            b"TribecaGovernor".as_ref(),
-            base.key().as_ref()
-        ],
-        bump = bump,
-        payer = payer,
-    )]
-    pub governor: Account<'info, Governor>,
-    /// The Smart Wallet.
-    pub smart_wallet: Account<'info, SmartWallet>,
-    /// Payer.
-    #[account(mut)]
-    pub payer: Signer<'info>,
-    /// System program.
-    pub system_program: Program<'info, System>,
-}
-
 /// Accounts for [govern::create_proposal].
 #[derive(Accounts)]
 #[instruction(bump: u8, instructions: Vec<ProposalInstruction>)]
