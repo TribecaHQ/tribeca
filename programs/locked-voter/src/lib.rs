@@ -115,4 +115,6 @@ pub enum ErrorCode {
     RefreshCannotShorten,
     #[msg("Escrow has not ended.")]
     EscrowNotEnded,
+    #[msg("Program whitelist enabled; please provide whitelist entry and instructions sysvar")]
+    MustProvideWhitelist,
 }

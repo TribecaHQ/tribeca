@@ -47,8 +47,12 @@ pub struct LockerWhitelistEntry {
     pub bump: u8,
     /// [Locker] this whitelist entry belongs to.
     pub locker: Pubkey,
-    /// Key of program_id allowed to be owner of the [Escrow::owner] account.
+    /// Key of the program_id allowed to call the `lock` CPI.
     pub program_id: Pubkey,
+    /// The account authorized to be the [Escrow::owner] with this CPI.
+    /// If set to [anchor_lang::solana_program::system_program::ID],
+    /// all accounts are allowed to be the [Escrow::owner].
+    pub owner: Pubkey,
 }
 
 /// Locks tokens on behalf of a user.
