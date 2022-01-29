@@ -293,7 +293,8 @@ export class LockerWrapper {
   }
 
   async createApproveProgramLockPrivilegeIx(
-    programId: PublicKey
+    programId: PublicKey,
+    owner: PublicKey = SystemProgram.programId
   ): Promise<TransactionInstruction> {
     const [whitelistEntry, bump] = await findWhitelistAddress(
       this.locker,
@@ -310,6 +311,7 @@ export class LockerWrapper {
         governor: lockerData.governor,
         smartWallet: governorData.smartWallet,
         executableId: programId,
+        whitelistedOwner: owner,
         payer: this.sdk.provider.wallet.publicKey,
         systemProgram: SystemProgram.programId,
       },
