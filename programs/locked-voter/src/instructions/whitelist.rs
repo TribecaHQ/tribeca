@@ -12,7 +12,8 @@ pub struct ApproveProgramLockPrivilege<'info> {
         seeds = [
             b"LockerWhitelistEntry".as_ref(),
             locker.key().to_bytes().as_ref(),
-            executable_id.key().to_bytes().as_ref()
+            executable_id.key().to_bytes().as_ref(),
+            whitelisted_owner.key().to_bytes().as_ref()
         ],
         bump = bump,
         payer = payer
@@ -27,6 +28,9 @@ pub struct ApproveProgramLockPrivilege<'info> {
 
     /// ProgramId of the program to whitelist.
     pub executable_id: UncheckedAccount<'info>,
+
+    /// Owner whitelisted. If set to [System], then the program is whitelisted for all accounts.
+    pub whitelisted_owner: UncheckedAccount<'info>,
 
     /// Payer of the initialization.
     #[account(mut)]
@@ -43,10 +47,12 @@ impl<'info> ApproveProgramLockPrivilege<'info> {
         whitelist_entry.bump = bump;
         whitelist_entry.locker = self.locker.key();
         whitelist_entry.program_id = self.executable_id.key();
+        whitelist_entry.owner = self.whitelisted_owner.key();
 
         emit!(ApproveLockPrivilegeEvent {
             locker: whitelist_entry.locker,
             program_id: whitelist_entry.program_id,
+            owner: whitelist_entry.owner,
             timestamp: Clock::get()?.unix_timestamp
         });
 
@@ -120,6 +126,8 @@ pub struct ApproveLockPrivilegeEvent {
     pub locker: Pubkey,
     /// ProgramId approved to make CPI calls to [locked_voter::lock].
     pub program_id: Pubkey,
+    /// Owner of the [Escrow].
+    pub owner: Pubkey,
     /// Timestamp of the event.
     pub timestamp: i64,
 }

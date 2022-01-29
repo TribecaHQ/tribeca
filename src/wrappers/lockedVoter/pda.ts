@@ -1,5 +1,5 @@
 import { utils } from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 import { TRIBECA_ADDRESSES } from "../../constants";
 
@@ -28,13 +28,15 @@ export const findEscrowAddress = async (
 
 export const findWhitelistAddress = async (
   locker: PublicKey,
-  programId: PublicKey
+  programId: PublicKey,
+  owner: PublicKey | null
 ): Promise<[PublicKey, number]> => {
   return await PublicKey.findProgramAddress(
     [
       utils.bytes.utf8.encode("LockerWhitelistEntry"),
       locker.toBuffer(),
       programId.toBuffer(),
+      owner ? owner.toBuffer() : SystemProgram.programId.toBuffer(),
     ],
     TRIBECA_ADDRESSES.LockedVoter
   );

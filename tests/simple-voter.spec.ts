@@ -8,7 +8,7 @@ import {
   getTokenAccount,
   sleep,
 } from "@saberhq/token-utils";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
 import { expect } from "chai";
 import invariant from "tiny-invariant";
@@ -70,7 +70,7 @@ describe("Simple Voter", () => {
   });
 
   let proposal: PublicKey;
-  let user: Keypair;
+  let user: Signer;
 
   beforeEach("create a proposal", async () => {
     user = await createUser(sdk.provider, govTokenMint);
@@ -100,7 +100,7 @@ describe("Simple Voter", () => {
   });
 
   describe("Token Record", () => {
-    let user: Keypair;
+    let user: Signer;
 
     beforeEach("Create user and deposit tokens", async () => {
       user = await createUser(sdk.provider, govTokenMint);
@@ -181,7 +181,7 @@ describe("Simple Voter", () => {
   });
 
   describe("Cast votes", () => {
-    let user: Keypair;
+    let user: Signer;
 
     beforeEach("Create user and deposit tokens", async () => {
       user = await createUser(sdk.provider, govTokenMint);

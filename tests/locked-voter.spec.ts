@@ -1,7 +1,7 @@
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { GokiSDK } from "@gokiprotocol/client";
 import { newProgram } from "@saberhq/anchor-contrib";
-import { expectTX } from "@saberhq/chai-solana";
+import { assertTXThrows, expectTX } from "@saberhq/chai-solana";
 import { TransactionEnvelope } from "@saberhq/solana-contrib";
 import {
   createMint,
@@ -13,6 +13,7 @@ import {
 } from "@saberhq/token-utils";
 import type {
   SendTransactionError,
+  Signer,
   TransactionInstruction,
 } from "@solana/web3.js";
 import {
@@ -109,7 +110,7 @@ describe("Locked Voter", () => {
 
   let proposal: PublicKey;
   let proposalIndex: BN;
-  let user: Keypair;
+  let user: Signer;
 
   beforeEach("create a proposal", async () => {
     user = await createUser(sdk.provider, govTokenMint);
@@ -213,7 +214,7 @@ describe("Locked Voter", () => {
   });
 
   describe("Escrow", () => {
-    let user: Keypair;
+    let user: Signer;
 
     beforeEach("Create user and deposit tokens", async () => {
       user = await createUser(sdk.provider, govTokenMint);
@@ -390,7 +391,7 @@ describe("Locked Voter", () => {
   });
 
   describe("Voting", () => {
-    let user: Keypair;
+    let user: Signer;
     let escrowW: VoteEscrow;
 
     beforeEach("lock token and activate proposal", async () => {
@@ -497,9 +498,9 @@ describe("Locked Voter", () => {
       });
     });
 
-    const buildCPITX = async (): Promise<TransactionEnvelope> => {
+    const buildCPITX = async (owner?: Signer): Promise<TransactionEnvelope> => {
       const { provider } = sdk;
-      const user = await createUser(provider, govTokenMint);
+      const user = await createUser(provider, govTokenMint, owner);
       const authority = user.publicKey;
       const { escrow, instruction: initEscrowIx } =
         await lockerW.getOrCreateEscrow(authority);
@@ -524,7 +525,8 @@ describe("Locked Voter", () => {
 
       const [whitelistEntry] = await findWhitelistAddress(
         lockerW.locker,
-        TEST_PROGRAM_ID
+        TEST_PROGRAM_ID,
+        owner ? owner.publicKey : null
       );
 
       instructions.push(
@@ -573,10 +575,48 @@ describe("Locked Voter", () => {
         provider: sdk.provider,
         smartWalletWrapper: smartWalletW,
         instructions: [
-          await lockerW.createApproveProgramLockPrivilegeIx(TEST_PROGRAM_ID),
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            null
+          ),
         ],
       });
       const tx = await buildCPITX();
+      await expectTX(tx, "successfully locked tokens via the whitelist tester")
+        .to.be.fulfilled;
+    });
+
+    it("CPI fails when program owner is not whitelisted", async () => {
+      const owner = Keypair.generate();
+      const faker = Keypair.generate();
+      await executeTransactionBySmartWallet({
+        provider: sdk.provider,
+        smartWalletWrapper: smartWalletW,
+        instructions: [
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            faker.publicKey
+          ),
+        ],
+      });
+      const tx = await buildCPITX(owner);
+
+      await assertTXThrows(tx, LockedVoterErrors.ProgramNotWhitelisted);
+    });
+
+    it("CPI succeeds after program owner has been whitelisted", async () => {
+      const owner = Keypair.generate();
+      await executeTransactionBySmartWallet({
+        provider: sdk.provider,
+        smartWalletWrapper: smartWalletW,
+        instructions: [
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            owner.publicKey
+          ),
+        ],
+      });
+      const tx = await buildCPITX(owner);
       await expectTX(tx, "successfully locked tokens via the whitelist tester")
         .to.be.fulfilled;
     });

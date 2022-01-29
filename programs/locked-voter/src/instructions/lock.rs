@@ -1,5 +1,5 @@
 use crate::*;
-use anchor_lang::solana_program::sysvar::instructions::get_instruction_relative;
+use anchor_lang::solana_program::{system_program, sysvar::instructions::get_instruction_relative};
 use anchor_spl::token;
 use num_traits::ToPrimitive;
 
@@ -135,10 +135,7 @@ impl<'info> Lock<'info> {
     }
 
     pub fn check_whitelisted(&self, ra: &[AccountInfo]) -> ProgramResult {
-        invariant!(
-            ra.len() == 2,
-            "program whitelist enabled; please provide whitelist entry and instructions sysvar"
-        );
+        invariant!(ra.len() == 2, MustProvideWhitelist);
         let accounts_iter = &mut ra.iter();
         let ix_sysvar_account_info = next_account_info(accounts_iter)?;
         let program_id = get_instruction_relative(0, ix_sysvar_account_info)?.program_id;
@@ -155,6 +152,13 @@ impl<'info> Lock<'info> {
             Account::<LockerWhitelistEntry>::try_from(whitelist_entry_account_info)?;
         assert_keys_eq!(whitelist_entry.locker, self.locker);
         assert_keys_eq!(whitelist_entry.program_id, program_id);
+        if whitelist_entry.owner != system_program::ID {
+            assert_keys_eq!(
+                whitelist_entry.owner,
+                self.escrow_owner,
+                EscrowOwnerNotWhitelisted
+            );
+        }
 
         Ok(())
     }

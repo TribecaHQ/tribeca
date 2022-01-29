@@ -3,7 +3,7 @@ import { findTransactionAddress, GokiSDK } from "@gokiprotocol/client";
 import { expectTX } from "@saberhq/chai-solana";
 import type { u64 } from "@saberhq/token-utils";
 import { createMint, sleep } from "@saberhq/token-utils";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
 import { BN } from "bn.js";
 import { expect } from "chai";
@@ -75,7 +75,7 @@ describe("Execute proposal", () => {
     smartWalletW = smartWalletWrapper;
   });
 
-  let user1: Keypair;
+  let user1: Signer;
   let proposal: PublicKey;
   let proposalIndex: u64;
 

@@ -4,14 +4,18 @@ import type { Idl } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { chaiSolana, expectTX } from "@saberhq/chai-solana";
 import type { Provider } from "@saberhq/solana-contrib";
-import { SolanaProvider, TransactionEnvelope } from "@saberhq/solana-contrib";
+import {
+  SolanaAugmentedProvider,
+  SolanaProvider,
+  TransactionEnvelope,
+} from "@saberhq/solana-contrib";
 import {
   getOrCreateATA,
   SPLToken,
   TOKEN_PROGRAM_ID,
   u64,
 } from "@saberhq/token-utils";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import {
   Keypair,
   LAMPORTS_PER_SOL,
@@ -111,11 +115,15 @@ export const setupGovernor = async ({
 
 export const createUser = async (
   provider: Provider,
-  govTokenMint: PublicKey
-): Promise<Keypair> => {
-  const user = Keypair.generate();
-
-  await provider.connection.requestAirdrop(user.publicKey, LAMPORTS_PER_SOL);
+  govTokenMint: PublicKey,
+  user: Signer = Keypair.generate()
+): Promise<Signer> => {
+  await (
+    await new SolanaAugmentedProvider(provider).requestAirdrop(
+      LAMPORTS_PER_SOL,
+      user.publicKey
+    )
+  ).wait();
 
   const { address, instruction } = await getOrCreateATA({
     provider,
