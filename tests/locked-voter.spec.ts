@@ -575,7 +575,10 @@ describe("Locked Voter", () => {
         provider: sdk.provider,
         smartWalletWrapper: smartWalletW,
         instructions: [
-          await lockerW.createApproveProgramLockPrivilegeIx(TEST_PROGRAM_ID),
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            null
+          ),
         ],
       });
       const tx = await buildCPITX();
