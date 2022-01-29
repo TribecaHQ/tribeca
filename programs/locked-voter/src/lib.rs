@@ -117,4 +117,6 @@ pub enum ErrorCode {
     EscrowNotEnded,
     #[msg("Program whitelist enabled; please provide whitelist entry and instructions sysvar")]
     MustProvideWhitelist,
+    #[msg("CPI caller not whitelisted for escrow owner to invoke lock instruction.")]
+    EscrowOwnerNotWhitelisted,
 }

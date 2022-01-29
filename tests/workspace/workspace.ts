@@ -11,7 +11,7 @@ import {
   TOKEN_PROGRAM_ID,
   u64,
 } from "@saberhq/token-utils";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import {
   Keypair,
   LAMPORTS_PER_SOL,
@@ -111,10 +111,9 @@ export const setupGovernor = async ({
 
 export const createUser = async (
   provider: Provider,
-  govTokenMint: PublicKey
-): Promise<Keypair> => {
-  const user = Keypair.generate();
-
+  govTokenMint: PublicKey,
+  user: Signer = Keypair.generate()
+): Promise<Signer> => {
   await provider.connection.requestAirdrop(user.publicKey, LAMPORTS_PER_SOL);
 
   const { address, instruction } = await getOrCreateATA({

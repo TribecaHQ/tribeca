@@ -153,7 +153,11 @@ impl<'info> Lock<'info> {
         assert_keys_eq!(whitelist_entry.locker, self.locker);
         assert_keys_eq!(whitelist_entry.program_id, program_id);
         if whitelist_entry.owner != system_program::ID {
-            assert_keys_eq!(whitelist_entry.owner, self.escrow_owner);
+            assert_keys_eq!(
+                whitelist_entry.owner,
+                self.escrow_owner,
+                EscrowOwnerNotWhitelisted
+            );
         }
 
         Ok(())
