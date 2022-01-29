@@ -1,7 +1,7 @@
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { GokiSDK } from "@gokiprotocol/client";
 import { newProgram } from "@saberhq/anchor-contrib";
-import { expectTX } from "@saberhq/chai-solana";
+import { assertTXThrows, expectTX } from "@saberhq/chai-solana";
 import { TransactionEnvelope } from "@saberhq/solana-contrib";
 import {
   createMint,
@@ -526,7 +526,7 @@ describe("Locked Voter", () => {
       const [whitelistEntry] = await findWhitelistAddress(
         lockerW.locker,
         TEST_PROGRAM_ID,
-        owner ? owner.publicKey : undefined
+        owner ? owner.publicKey : null
       );
 
       instructions.push(
@@ -597,14 +597,8 @@ describe("Locked Voter", () => {
         ],
       });
       const tx = await buildCPITX(owner);
-      try {
-        await tx.confirm();
-      } catch (e) {
-        const error = e as Error;
-        expect(error.message).to.include(
-          `0x${LockedVoterErrors.ProgramNotWhitelisted.code.toString(16)}`
-        );
-      }
+
+      await assertTXThrows(tx, LockedVoterErrors.ProgramNotWhitelisted);
     });
 
     it("CPI succeeds after program owner has been whitelisted", async () => {

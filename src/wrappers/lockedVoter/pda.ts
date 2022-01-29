@@ -29,14 +29,14 @@ export const findEscrowAddress = async (
 export const findWhitelistAddress = async (
   locker: PublicKey,
   programId: PublicKey,
-  owner: PublicKey = SystemProgram.programId
+  owner: PublicKey | null
 ): Promise<[PublicKey, number]> => {
   return await PublicKey.findProgramAddress(
     [
       utils.bytes.utf8.encode("LockerWhitelistEntry"),
       locker.toBuffer(),
       programId.toBuffer(),
-      owner.toBuffer(),
+      owner ? owner.toBuffer() : SystemProgram.programId.toBuffer(),
     ],
     TRIBECA_ADDRESSES.LockedVoter
   );

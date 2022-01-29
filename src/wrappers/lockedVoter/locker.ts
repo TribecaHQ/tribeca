@@ -298,7 +298,8 @@ export class LockerWrapper {
   ): Promise<TransactionInstruction> {
     const [whitelistEntry, bump] = await findWhitelistAddress(
       this.locker,
-      programId
+      programId,
+      owner
     );
     const lockerData = await this.reload();
     const governorData = await this.sdk.programs.Govern.account.governor.fetch(

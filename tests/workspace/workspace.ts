@@ -4,7 +4,11 @@ import type { Idl } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { chaiSolana, expectTX } from "@saberhq/chai-solana";
 import type { Provider } from "@saberhq/solana-contrib";
-import { SolanaProvider, TransactionEnvelope } from "@saberhq/solana-contrib";
+import {
+  SolanaAugmentedProvider,
+  SolanaProvider,
+  TransactionEnvelope,
+} from "@saberhq/solana-contrib";
 import {
   getOrCreateATA,
   SPLToken,
@@ -114,7 +118,12 @@ export const createUser = async (
   govTokenMint: PublicKey,
   user: Signer = Keypair.generate()
 ): Promise<Signer> => {
-  await provider.connection.requestAirdrop(user.publicKey, LAMPORTS_PER_SOL);
+  await (
+    await new SolanaAugmentedProvider(provider).requestAirdrop(
+      LAMPORTS_PER_SOL,
+      user.publicKey
+    )
+  ).wait();
 
   const { address, instruction } = await getOrCreateATA({
     provider,

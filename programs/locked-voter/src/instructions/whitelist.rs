@@ -52,6 +52,7 @@ impl<'info> ApproveProgramLockPrivilege<'info> {
         emit!(ApproveLockPrivilegeEvent {
             locker: whitelist_entry.locker,
             program_id: whitelist_entry.program_id,
+            owner: whitelist_entry.owner,
             timestamp: Clock::get()?.unix_timestamp
         });
 
@@ -125,6 +126,8 @@ pub struct ApproveLockPrivilegeEvent {
     pub locker: Pubkey,
     /// ProgramId approved to make CPI calls to [locked_voter::lock].
     pub program_id: Pubkey,
+    /// Owner of the [Escrow].
+    pub owner: Pubkey,
     /// Timestamp of the event.
     pub timestamp: i64,
 }
