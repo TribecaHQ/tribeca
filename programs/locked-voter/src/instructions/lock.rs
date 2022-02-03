@@ -1,5 +1,6 @@
 use crate::*;
-use anchor_lang::solana_program::{system_program, sysvar::instructions::get_instruction_relative};
+use anchor_lang::solana_program::sysvar::instructions::get_instruction_relative;
+use anchor_lang::solana_program::{system_program, sysvar};
 use anchor_spl::token;
 use num_traits::ToPrimitive;
 
@@ -138,6 +139,8 @@ impl<'info> Lock<'info> {
         invariant!(ra.len() == 2, MustProvideWhitelist);
         let accounts_iter = &mut ra.iter();
         let ix_sysvar_account_info = next_account_info(accounts_iter)?;
+        assert_keys_eq!(ix_sysvar_account_info.key(), sysvar::instructions::ID);
+
         let program_id = get_instruction_relative(0, ix_sysvar_account_info)?.program_id;
         if program_id == crate::ID {
             return Ok(());
