@@ -43,7 +43,7 @@
     "@types/chai": "^4.3.0",
     "@types/lodash": "^4.14.178",
     "@types/mocha": "^9.1.0",
-    "@types/node": "^16.11.24",
+    "@types/node": "^17.0.17",
     "@types/prettier": "^2.4.4",
     "@yarnpkg/doctor": "^3.1.1-rc.2",
     "bn.js": "^5.2.0",
