@@ -103,7 +103,6 @@ pub mod simple_voter {
 }
 
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct InitializeElectorate<'info> {
     /// Base used to create the voter.
     pub base: Signer<'info>,
@@ -126,7 +125,6 @@ pub struct InitializeElectorate<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct InitializeTokenRecord<'info> {
     pub authority: Signer<'info>,
     /// TODO(michael): Docs

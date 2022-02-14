@@ -73,7 +73,6 @@ impl<'info> Validate<'info> for ApproveProgramLockPrivilege<'info> {
 
 /// Accounts for [locked_voter::revoke_program_lock_privilege].
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct RevokeProgramLockPrivilege<'info> {
     /// The [Locker].
     pub locker: Account<'info, Locker>,
