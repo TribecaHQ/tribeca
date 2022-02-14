@@ -2,7 +2,6 @@ use crate::*;
 
 /// Accounts for [locked_voter::new_locker].
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct NewLocker<'info> {
     /// Base.
     pub base: Signer<'info>,
@@ -14,7 +13,7 @@ pub struct NewLocker<'info> {
             b"Locker".as_ref(),
             base.key().to_bytes().as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer
     )]
     pub locker: Account<'info, Locker>,
