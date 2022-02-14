@@ -7,7 +7,7 @@ pub mod macros;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use govern::{Governor, Proposal, Vote};
-use vipers::*;
+use vipers::prelude::*;
 
 mod instructions;
 pub mod locker;
@@ -26,8 +26,9 @@ pub mod locked_voter {
 
     /// Creates a new [Locker].
     #[access_control(ctx.accounts.validate())]
-    pub fn new_locker(ctx: Context<NewLocker>, bump: u8, params: LockerParams) -> ProgramResult {
-        ctx.accounts.new_locker(bump, params)
+    pub fn new_locker(ctx: Context<NewLocker>, _bump: u8, params: LockerParams) -> ProgramResult {
+        ctx.accounts
+            .new_locker(*unwrap_int!(ctx.bumps.get("locker")), params)
     }
 
     /// Creates a new [Escrow] for an account.
@@ -36,8 +37,9 @@ pub mod locked_voter {
     /// lock up tokens for a specific period of time, in exchange for voting rights
     /// linearly proportional to the amount of votes given.
     #[access_control(ctx.accounts.validate())]
-    pub fn new_escrow(ctx: Context<NewEscrow>, bump: u8) -> ProgramResult {
-        ctx.accounts.new_escrow(bump)
+    pub fn new_escrow(ctx: Context<NewEscrow>, _bump: u8) -> ProgramResult {
+        ctx.accounts
+            .new_escrow(*unwrap_int!(ctx.bumps.get("escrow")))
     }
 
     /// Stakes `amount` tokens into the [Escrow].
@@ -88,9 +90,10 @@ pub mod locked_voter {
     #[access_control(ctx.accounts.validate())]
     pub fn approve_program_lock_privilege(
         ctx: Context<ApproveProgramLockPrivilege>,
-        bump: u8,
+        _bump: u8,
     ) -> ProgramResult {
-        ctx.accounts.approve_program_lock_privilege(bump)
+        ctx.accounts
+            .approve_program_lock_privilege(*unwrap_int!(ctx.bumps.get("whitelist_entry")))
     }
 
     /// Close a [LockerWhitelistEntry] revoking program's CPI privilege.

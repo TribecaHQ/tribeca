@@ -22,11 +22,11 @@ pub mod simple_voter {
     #[access_control(ctx.accounts.validate())]
     pub fn initialize_electorate(
         ctx: Context<InitializeElectorate>,
-        bump: u8,
+        _bump: u8,
         proposal_threshold: u64,
     ) -> ProgramResult {
         let electorate = &mut ctx.accounts.electorate;
-        electorate.bump = bump;
+        electorate.bump = *unwrap_int!(ctx.bumps.get("electorate"));
         electorate.proposal_threshold = proposal_threshold;
         electorate.base = ctx.accounts.base.key();
         electorate.governor = ctx.accounts.governor.key();
@@ -36,9 +36,12 @@ pub mod simple_voter {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn initialize_token_record(ctx: Context<InitializeTokenRecord>, bump: u8) -> ProgramResult {
+    pub fn initialize_token_record(
+        ctx: Context<InitializeTokenRecord>,
+        _bump: u8,
+    ) -> ProgramResult {
         let token_record = &mut ctx.accounts.token_record;
-        token_record.bump = bump;
+        token_record.bump = *unwrap_int!(ctx.bumps.get("token_record"));
         token_record.balance = ctx.accounts.gov_token_vault.amount;
         token_record.authority = ctx.accounts.authority.key();
         token_record.electorate = ctx.accounts.electorate.key();
@@ -108,7 +111,7 @@ pub struct InitializeElectorate<'info> {
     #[account(
         init,
         seeds = [b"SimpleElectorate".as_ref(), base.key().to_bytes().as_ref()],
-        bump = bump,
+        bump,
         payer = payer,
     )]
     pub electorate: Account<'info, Electorate>,
@@ -134,7 +137,7 @@ pub struct InitializeTokenRecord<'info> {
             authority.key().to_bytes().as_ref(),
             electorate.key().to_bytes().as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer,
     )]
     pub token_record: Account<'info, state::TokenRecord>,

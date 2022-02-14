@@ -4,7 +4,6 @@ use crate::*;
 
 /// Accounts for [govern::create_governor].
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct CreateGovernor<'info> {
     /// Base of the [Governor] key.
     pub base: Signer<'info>,
@@ -15,7 +14,7 @@ pub struct CreateGovernor<'info> {
             b"TribecaGovernor".as_ref(),
             base.key().as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer,
     )]
     pub governor: Account<'info, Governor>,
@@ -43,7 +42,7 @@ pub struct CreateProposal<'info> {
             governor.key().as_ref(),
             governor.proposal_count.to_le_bytes().as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer,
         space = Proposal::space(instructions),
     )]
@@ -118,7 +117,7 @@ pub struct NewVote<'info> {
             proposal.key().as_ref(),
             voter.as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer
     )]
     pub vote: Account<'info, Vote>,
@@ -161,7 +160,7 @@ pub struct CreateProposalMeta<'info> {
             b"TribecaProposalMeta".as_ref(),
             proposal.key().as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer,
         space = 4 + std::mem::size_of::<ProposalMeta>()
             + 4 + title.as_bytes().len()

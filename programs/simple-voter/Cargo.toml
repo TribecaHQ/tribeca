@@ -20,8 +20,8 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-anchor-lang = ">=0.17"
-anchor-spl = ">=0.17"
+anchor-lang = ">=0.21"
+anchor-spl = ">=0.21"
 govern = { path = "../govern", features = ["cpi"], version = "^0.3" }
-smart-wallet = { version = "^0.5", features = ["cpi"] }
+smart-wallet = { version = "^0.6", features = ["cpi"] }
 vipers = "1.5.8"

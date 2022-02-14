@@ -34,7 +34,7 @@ pub mod govern {
     #[access_control(ctx.accounts.validate())]
     pub fn create_governor(
         ctx: Context<CreateGovernor>,
-        bump: u8,
+        _bump: u8,
         electorate: Pubkey,
         params: GovernanceParameters,
     ) -> ProgramResult {
@@ -45,7 +45,7 @@ pub mod govern {
 
         let governor = &mut ctx.accounts.governor;
         governor.base = ctx.accounts.base.key();
-        governor.bump = bump;
+        governor.bump = *unwrap_int!(ctx.bumps.get("governor"));
 
         governor.proposal_count = 0;
         governor.electorate = electorate;
@@ -69,7 +69,7 @@ pub mod govern {
     #[access_control(ctx.accounts.validate())]
     pub fn create_proposal(
         ctx: Context<CreateProposal>,
-        bump: u8,
+        _bump: u8,
         instructions: Vec<ProposalInstruction>,
     ) -> ProgramResult {
         let governor = &mut ctx.accounts.governor;
@@ -77,7 +77,7 @@ pub mod govern {
         let proposal = &mut ctx.accounts.proposal;
         proposal.governor = governor.key();
         proposal.index = governor.proposal_count;
-        proposal.bump = bump;
+        proposal.bump = *unwrap_int!(ctx.bumps.get("proposal"));
 
         proposal.proposer = ctx.accounts.proposer.key();
 
@@ -121,7 +121,7 @@ pub mod govern {
             .and_then(|v: i64| now.checked_add(v)));
 
         emit!(ProposalActivateEvent {
-            governor: proposal.governor.key(),
+            governor: proposal.governor,
             proposal: proposal.key(),
             voting_ends_at: proposal.voting_ends_at,
         });
@@ -137,7 +137,7 @@ pub mod govern {
         proposal.canceled_at = Clock::get()?.unix_timestamp;
 
         emit!(ProposalCancelEvent {
-            governor: proposal.governor.key(),
+            governor: proposal.governor,
             proposal: proposal.key(),
         });
 
@@ -150,7 +150,7 @@ pub mod govern {
         ctx.accounts.queue_transaction(tx_bump)?;
 
         emit!(ProposalQueueEvent {
-            governor: ctx.accounts.proposal.governor.key(),
+            governor: ctx.accounts.proposal.governor,
             proposal: ctx.accounts.proposal.key(),
             transaction: ctx.accounts.transaction.key(),
         });
@@ -160,11 +160,11 @@ pub mod govern {
 
     /// Creates a new [Vote]. Anyone can call this.
     #[access_control(ctx.accounts.validate())]
-    pub fn new_vote(ctx: Context<NewVote>, bump: u8, voter: Pubkey) -> ProgramResult {
+    pub fn new_vote(ctx: Context<NewVote>, _bump: u8, voter: Pubkey) -> ProgramResult {
         let vote = &mut ctx.accounts.vote;
         vote.proposal = ctx.accounts.proposal.key();
         vote.voter = voter;
-        vote.bump = bump;
+        vote.bump = *unwrap_int!(ctx.bumps.get("vote"));
 
         vote.side = VoteSide::Pending.into();
         vote.weight = 0;
@@ -187,7 +187,7 @@ pub mod govern {
         vote.weight = weight;
 
         emit!(VoteSetEvent {
-            governor: proposal.governor.key(),
+            governor: proposal.governor,
             proposal: proposal.key(),
             voter: vote.voter,
             vote: vote.key(),
@@ -249,7 +249,7 @@ pub mod govern {
         proposal_meta.description_link = description_link.clone();
 
         emit!(ProposalMetaCreateEvent {
-            governor: ctx.accounts.proposal.governor.key(),
+            governor: ctx.accounts.proposal.governor,
             proposal: ctx.accounts.proposal.key(),
             title,
             description_link,

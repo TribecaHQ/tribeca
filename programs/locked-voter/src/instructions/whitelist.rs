@@ -2,7 +2,6 @@ use crate::*;
 
 /// Accounts for [locked_voter::approve_program_lock_privilege].
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct ApproveProgramLockPrivilege<'info> {
     /// The [Locker].
     pub locker: Account<'info, Locker>,
@@ -15,7 +14,7 @@ pub struct ApproveProgramLockPrivilege<'info> {
             executable_id.key().to_bytes().as_ref(),
             whitelisted_owner.key().to_bytes().as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer
     )]
     pub whitelist_entry: Account<'info, LockerWhitelistEntry>,
