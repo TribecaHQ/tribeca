@@ -95,11 +95,28 @@ export const DEFAULT_LOCKER_PARAMS: LockerParams = {
 };
 
 /**
- * The default number of signers required to execute a transaction.
+ * Smart wallet creation parameters.
  */
-export const DEFAULT_GOVERNOR_SMART_WALLET_THRESHOLD = 2;
+export interface SmartWalletParameters {
+  /**
+   * Number of signers required to execute a smart wallet transaction. This is useful for testing.
+   */
+  threshold: number;
+  /**
+   * Maximum number of owners on the smart wallet.
+   */
+  maxOwners: number;
+  /**
+   * Timelock delay.
+   */
+  delay: number;
+}
 
 /**
- * The default maximum number of owners that may be on a smart wallet.
+ * Default parameters for the Governor smart wallet.
  */
-export const DEFAULT_GOVERNOR_SMART_WALLET_MAX_OWNERS = 3;
+export const DEFAULT_GOVERNOR_SMART_WALLET_PARAMS: SmartWalletParameters = {
+  threshold: 2,
+  maxOwners: 3,
+  delay: 0,
+};

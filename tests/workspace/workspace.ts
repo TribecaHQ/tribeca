@@ -1,6 +1,4 @@
-import type { GokiSDK } from "@gokiprotocol/client";
 import type { SmartWalletWrapper } from "@gokiprotocol/client/dist/cjs/wrappers/smartWallet";
-import type { Idl } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { chaiSolana, expectTX } from "@saberhq/chai-solana";
 import type { Provider } from "@saberhq/solana-contrib";
@@ -21,12 +19,10 @@ import {
   LAMPORTS_PER_SOL,
   TransactionInstruction,
 } from "@solana/web3.js";
-import chai, { assert } from "chai";
+import chai from "chai";
 
 import type { TribecaPrograms } from "../../src";
 import { TribecaSDK } from "../../src";
-import type { GovernorWrapper } from "../../src/wrappers/govern/governor";
-import { findGovernorAddress } from "../../src/wrappers/govern/pda";
 
 chai.use(chaiSolana);
 
@@ -61,56 +57,6 @@ export const makeSDK = (): TribecaSDK => {
   return TribecaSDK.load({
     provider,
   });
-};
-
-type IDLError = NonNullable<Idl["errors"]>[number];
-
-export const assertError = (error: IDLError, other: IDLError): void => {
-  assert.strictEqual(error.code, other.code);
-  assert.strictEqual(error.msg, other.msg);
-};
-
-export const setupGovernor = async ({
-  electorate,
-  sdk,
-  gokiSDK,
-  owners,
-  ...governorParams
-}: {
-  electorate: PublicKey;
-  sdk: TribecaSDK;
-  gokiSDK: GokiSDK;
-  owners: PublicKey[];
-  quorumVotes?: anchor.BN;
-  votingDelay?: anchor.BN;
-  votingPeriod?: anchor.BN;
-  smartWalletOwner?: PublicKey;
-}): Promise<{
-  governorWrapper: GovernorWrapper;
-  smartWalletWrapper: SmartWalletWrapper;
-}> => {
-  const baseKP = Keypair.generate();
-  const [governor] = await findGovernorAddress(baseKP.publicKey);
-
-  const { smartWalletWrapper, tx: tx1 } = await gokiSDK.newSmartWallet({
-    owners: [...owners, governor],
-    threshold: ONE,
-    numOwners: 3,
-  });
-  await expectTX(tx1, "create smart wallet").to.be.fulfilled;
-
-  const { wrapper, tx: tx2 } = await sdk.govern.createGovernor({
-    baseKP,
-    electorate,
-    smartWallet: smartWalletWrapper.key,
-    ...governorParams,
-  });
-  await expectTX(tx2, "create governor").to.be.fulfilled;
-
-  return {
-    governorWrapper: wrapper,
-    smartWalletWrapper,
-  };
 };
 
 export const createUser = async (

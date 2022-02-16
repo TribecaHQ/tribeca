@@ -1,24 +1,28 @@
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
 
 import type { GovernorWrapper, LockerParams } from "../..";
-import {
-  DEFAULT_GOVERNANCE_PARAMETERS,
-  DEFAULT_LOCKER_PARAMS,
-} from "../../constants";
+import { DEFAULT_LOCKER_PARAMS } from "../../constants";
 import type { CreateGovernorWithElectorateParams } from "../govern/setup";
 import { createGovernorWithElectorate } from "../govern/setup";
 import { LockerWrapper } from "./locker";
 
-export interface CreateLockerParams extends CreateGovernorWithElectorateParams {
+export interface CreateLockerParams
+  extends Omit<CreateGovernorWithElectorateParams, "createElectorate"> {
+  /**
+   * Mint of the token staked for veTokens.
+   */
   govTokenMint: PublicKey;
+  /**
+   * Parameters for the locker.
+   */
   lockerParams?: Partial<LockerParams>;
   /**
    * Base of the locker.
    */
-  lockerBaseKP?: Keypair;
+  lockerBaseKP?: Signer;
 }
 
 /**
@@ -27,14 +31,10 @@ export interface CreateLockerParams extends CreateGovernorWithElectorateParams {
  */
 export const createLocker = async ({
   sdk,
-  gokiSDK,
   govTokenMint,
-  owners = [sdk.provider.wallet.publicKey],
-  governanceParameters = DEFAULT_GOVERNANCE_PARAMETERS,
   lockerParams = DEFAULT_LOCKER_PARAMS,
-  governorBaseKP = Keypair.generate(),
   lockerBaseKP = Keypair.generate(),
-  smartWalletBaseKP = Keypair.generate(),
+  ...createGovernorParams
 }: CreateLockerParams): Promise<{
   governorWrapper: GovernorWrapper;
   smartWalletWrapper: SmartWalletWrapper;
@@ -58,11 +58,7 @@ export const createLocker = async ({
       };
     },
     sdk,
-    gokiSDK,
-    owners,
-    governanceParameters,
-    governorBaseKP,
-    smartWalletBaseKP,
+    ...createGovernorParams,
   });
   return {
     ...governor,
