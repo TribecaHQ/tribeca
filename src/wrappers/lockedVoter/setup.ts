@@ -1,20 +1,25 @@
-import type { GokiSDK, SmartWalletWrapper } from "@gokiprotocol/client";
+import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
 import type { PublicKey } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
 
-import type {
-  GovernanceParameters,
-  GovernorWrapper,
-  LockerParams,
-} from "../..";
+import type { GovernorWrapper, LockerParams } from "../..";
 import {
   DEFAULT_GOVERNANCE_PARAMETERS,
   DEFAULT_LOCKER_PARAMS,
 } from "../../constants";
-import type { TribecaSDK } from "../../sdk";
+import type { CreateGovernorWithElectorateParams } from "../govern/setup";
 import { createGovernorWithElectorate } from "../govern/setup";
 import { LockerWrapper } from "./locker";
+
+export interface CreateLockerParams extends CreateGovernorWithElectorateParams {
+  govTokenMint: PublicKey;
+  lockerParams?: Partial<LockerParams>;
+  /**
+   * Base of the locker.
+   */
+  lockerBaseKP?: Keypair;
+}
 
 /**
  * Creates a new Locker.
@@ -30,26 +35,7 @@ export const createLocker = async ({
   governorBaseKP = Keypair.generate(),
   lockerBaseKP = Keypair.generate(),
   smartWalletBaseKP = Keypair.generate(),
-}: {
-  sdk: TribecaSDK;
-  gokiSDK: GokiSDK;
-  govTokenMint: PublicKey;
-  owners?: PublicKey[];
-  governanceParameters?: Partial<GovernanceParameters>;
-  lockerParams?: Partial<LockerParams>;
-  /**
-   * Base of the governor.
-   */
-  governorBaseKP?: Keypair;
-  /**
-   * Base of the governor.
-   */
-  lockerBaseKP?: Keypair;
-  /**
-   * Base of the smart wallet.
-   */
-  smartWalletBaseKP?: Keypair;
-}): Promise<{
+}: CreateLockerParams): Promise<{
   governorWrapper: GovernorWrapper;
   smartWalletWrapper: SmartWalletWrapper;
   lockerWrapper: LockerWrapper;
@@ -75,7 +61,7 @@ export const createLocker = async ({
     gokiSDK,
     owners,
     governanceParameters,
-    govBaseKP: governorBaseKP,
+    governorBaseKP,
     smartWalletBaseKP,
   });
   return {

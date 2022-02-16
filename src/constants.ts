@@ -93,3 +93,13 @@ export const DEFAULT_LOCKER_PARAMS: LockerParams = {
   maxStakeVoteMultiplier: 10,
   whitelistEnabled: false,
 };
+
+/**
+ * The default number of signers required to execute a transaction.
+ */
+export const DEFAULT_GOVERNOR_SMART_WALLET_THRESHOLD = 2;
+
+/**
+ * The default maximum number of owners that may be on a smart wallet.
+ */
+export const DEFAULT_GOVERNOR_SMART_WALLET_MAX_OWNERS = 3;

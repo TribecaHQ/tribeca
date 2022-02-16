@@ -1,5 +1,5 @@
 import { TransactionEnvelope } from "@saberhq/solana-contrib";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import { Keypair, SystemProgram } from "@solana/web3.js";
 import type BN from "bn.js";
 
@@ -33,7 +33,7 @@ export class GovernWrapper {
   }: {
     electorate: PublicKey;
     smartWallet: PublicKey;
-    baseKP?: Keypair;
+    baseKP?: Signer;
     quorumVotes?: BN;
     votingDelay?: BN;
     votingPeriod?: BN;
