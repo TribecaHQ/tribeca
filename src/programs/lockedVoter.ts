@@ -9,12 +9,14 @@ export type LockedVoterTypes = AnchorTypes<
   {
     locker: LockerData;
     escrow: EscrowData;
+    lockerWhitelistEntry: LockerWhitelistEntryData;
   }
 >;
 
 type Accounts = LockedVoterTypes["Accounts"];
 export type LockerData = Accounts["Locker"];
 export type EscrowData = Accounts["Escrow"];
+export type LockerWhitelistEntryData = Accounts["LockerWhitelistEntry"];
 
 export type LockerParams = LockedVoterTypes["Defined"]["LockerParams"];
 
