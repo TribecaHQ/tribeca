@@ -13,17 +13,15 @@ import { expect } from "chai";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_GOVERNANCE_PARAMETERS } from "../src";
-import {
-  createGovernorWithElectorate,
-  SimpleVoterWrapper,
-  VoteSide,
-} from "../src/wrappers";
+import type { SimpleVoterWrapper } from "../src/wrappers";
+import { VoteSide } from "../src/wrappers";
 import type { GovernorWrapper } from "../src/wrappers/govern/governor";
 import { findVoteAddress } from "../src/wrappers/govern/pda";
 import {
   findSimpleElectorateAddress,
   findTokenRecordAddress,
 } from "../src/wrappers/simpleVoter/pda";
+import { createSimpleElectorate } from "../src/wrappers/simpleVoter/setup";
 import {
   createUser,
   DUMMY_INSTRUCTIONS,
@@ -48,38 +46,32 @@ describe("Simple Voter", () => {
     const baseKP = Keypair.generate();
     base = baseKP.publicKey;
 
-    const { electorate, createTXs, governorWrapper, smartWalletWrapper } =
-      await createGovernorWithElectorate({
-        createElectorate: async (governorKey) => {
-          const { electorate, tx: tx3 } = await sdk.createSimpleElectorate({
-            baseKP,
-            proposalThreshold: INITIAL_MINT_AMOUNT,
-            governor: governorKey,
-            govTokenMint,
-          });
-          return {
-            key: electorate,
-            tx: tx3,
-          };
-        },
-        sdk,
-        owners: [sdk.provider.wallet.publicKey],
-        governanceParameters: {
-          quorumVotes: INITIAL_MINT_AMOUNT,
-          votingDelay: ZERO,
-          votingPeriod: new BN(2),
-        },
-        smartWalletParameters: {
-          // threshold = 1 allows us to test the whitelist stuff
-          threshold: 1,
-        },
-      });
+    const {
+      simpleVoterWrapper,
+      createTXs,
+      governorWrapper,
+      smartWalletWrapper,
+    } = await createSimpleElectorate({
+      sdk,
+      proposalThreshold: INITIAL_MINT_AMOUNT,
+      owners: [sdk.provider.wallet.publicKey],
+      govTokenMint,
+      governanceParameters: {
+        quorumVotes: INITIAL_MINT_AMOUNT,
+        votingDelay: ZERO,
+        votingPeriod: new BN(2),
+      },
+      smartWalletParameters: {
+        // threshold = 1 allows us to test the whitelist stuff
+        threshold: 1,
+      },
+    });
 
     for (const { title, tx } of createTXs) {
       await assertTXSuccess(tx, title);
     }
 
-    voterW = await SimpleVoterWrapper.load(sdk, electorate);
+    voterW = simpleVoterWrapper;
     governorW = governorWrapper;
     smartWalletW = smartWalletWrapper;
   });

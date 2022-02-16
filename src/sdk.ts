@@ -84,7 +84,7 @@ export class TribecaSDK {
     baseKP = Keypair.generate(),
   }: {
     proposalThreshold: BN;
-    baseKP?: Keypair;
+    baseKP?: Signer;
     governor: PublicKey;
     govTokenMint: PublicKey;
   }): Promise<PendingElectorate> {
