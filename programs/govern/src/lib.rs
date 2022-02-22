@@ -260,7 +260,7 @@ pub mod govern {
 }
 
 /// Errors.
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Invalid vote side.")]
     InvalidVoteSide,

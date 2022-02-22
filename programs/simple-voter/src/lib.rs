@@ -219,7 +219,7 @@ pub struct VoterContext<'info> {
     pub tribeca: TribecaContext<'info>,
 }
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Below proposing threshold.")]
     BelowProposingThreshold,

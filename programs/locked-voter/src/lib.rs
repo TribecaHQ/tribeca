@@ -106,7 +106,7 @@ pub mod locked_voter {
 }
 
 /// [locked_voter] errors.
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("CPI caller not whitelisted to invoke lock instruction.")]
     ProgramNotWhitelisted,
