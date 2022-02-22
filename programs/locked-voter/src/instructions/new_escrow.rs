@@ -32,7 +32,7 @@ pub struct NewEscrow<'info> {
 
 impl<'info> NewEscrow<'info> {
     /// Creates a new [Escrow].
-    pub fn new_escrow(&mut self, bump: u8) -> ProgramResult {
+    pub fn new_escrow(&mut self, bump: u8) -> Result<()> {
         let escrow = &mut self.escrow;
         escrow.locker = self.locker.key();
         escrow.owner = self.escrow_owner.key();
@@ -60,7 +60,7 @@ impl<'info> NewEscrow<'info> {
 }
 
 impl<'info> Validate<'info> for NewEscrow<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         Ok(())
     }
 }

@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::{electorate_seeds, VoterContext};
 
-pub fn process_cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> ProgramResult {
+pub fn process_cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> Result<()> {
     let seeds: &[&[&[u8]]] = electorate_seeds!(ctx.accounts.electorate);
     let cpi_ctx = CpiContext::new(
         ctx.accounts.tribeca.program.to_account_info(),
@@ -17,7 +17,7 @@ pub fn process_cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> ProgramR
     Ok(())
 }
 
-pub fn process_withdraw_votes(ctx: Context<VoterContext>) -> ProgramResult {
+pub fn process_withdraw_votes(ctx: Context<VoterContext>) -> Result<()> {
     let seeds: &[&[&[u8]]] = electorate_seeds!(ctx.accounts.electorate);
     let cpi_ctx = CpiContext::new(
         ctx.accounts.tribeca.program.clone(),

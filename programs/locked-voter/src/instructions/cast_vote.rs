@@ -25,7 +25,7 @@ pub struct CastVote<'info> {
 }
 
 impl<'info> CastVote<'info> {
-    pub fn cast_vote(&mut self, side: u8) -> ProgramResult {
+    pub fn cast_vote(&mut self, side: u8) -> Result<()> {
         let voting_power = self.future_voting_power()?;
 
         // zero votes should short circuit.
@@ -59,7 +59,7 @@ impl<'info> CastVote<'info> {
 }
 
 impl<'info> Validate<'info> for CastVote<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.escrow.locker, self.locker);
         assert_keys_eq!(self.escrow.vote_delegate, self.vote_delegate);
         assert_keys_eq!(self.locker.governor, self.governor);

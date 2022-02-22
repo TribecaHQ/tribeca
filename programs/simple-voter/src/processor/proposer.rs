@@ -1,7 +1,7 @@
 use crate::{electorate_seeds, ActivateProposal};
 use anchor_lang::prelude::*;
 
-pub fn activate_proposal(ctx: Context<ActivateProposal>) -> ProgramResult {
+pub fn activate_proposal(ctx: Context<ActivateProposal>) -> Result<()> {
     let seeds: &[&[&[u8]]] = electorate_seeds!(ctx.accounts.electorate);
     govern::cpi::activate_proposal(
         CpiContext::new(

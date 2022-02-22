@@ -26,7 +26,7 @@ pub mod locked_voter {
 
     /// Creates a new [Locker].
     #[access_control(ctx.accounts.validate())]
-    pub fn new_locker(ctx: Context<NewLocker>, _bump: u8, params: LockerParams) -> ProgramResult {
+    pub fn new_locker(ctx: Context<NewLocker>, _bump: u8, params: LockerParams) -> Result<()> {
         ctx.accounts
             .new_locker(*unwrap_int!(ctx.bumps.get("locker")), params)
     }
@@ -37,7 +37,7 @@ pub mod locked_voter {
     /// lock up tokens for a specific period of time, in exchange for voting rights
     /// linearly proportional to the amount of votes given.
     #[access_control(ctx.accounts.validate())]
-    pub fn new_escrow(ctx: Context<NewEscrow>, _bump: u8) -> ProgramResult {
+    pub fn new_escrow(ctx: Context<NewEscrow>, _bump: u8) -> Result<()> {
         ctx.accounts
             .new_escrow(*unwrap_int!(ctx.bumps.get("escrow")))
     }
@@ -48,7 +48,7 @@ pub mod locked_voter {
         ctx: Context<'_, '_, '_, 'info, Lock<'info>>,
         amount: u64,
         duration: i64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         if ctx.accounts.locker.params.whitelist_enabled {
             ctx.accounts.check_whitelisted(ctx.remaining_accounts)?;
         }
@@ -58,31 +58,31 @@ pub mod locked_voter {
 
     /// Exits the DAO; i.e., withdraws all staked tokens in an [Escrow] if the [Escrow] is unlocked.
     #[access_control(ctx.accounts.validate())]
-    pub fn exit(ctx: Context<Exit>) -> ProgramResult {
+    pub fn exit(ctx: Context<Exit>) -> Result<()> {
         ctx.accounts.exit()
     }
 
     /// Activates a proposal.
     #[access_control(ctx.accounts.validate())]
-    pub fn activate_proposal(ctx: Context<ActivateProposal>) -> ProgramResult {
+    pub fn activate_proposal(ctx: Context<ActivateProposal>) -> Result<()> {
         ctx.accounts.activate_proposal()
     }
 
     /// Casts a vote.
     #[access_control(ctx.accounts.validate())]
-    pub fn cast_vote(ctx: Context<CastVote>, side: u8) -> ProgramResult {
+    pub fn cast_vote(ctx: Context<CastVote>, side: u8) -> Result<()> {
         ctx.accounts.cast_vote(side)
     }
 
     /// Delegate escrow vote.
     #[access_control(ctx.accounts.validate())]
-    pub fn set_vote_delegate(ctx: Context<SetVoteDelegate>, new_delegate: Pubkey) -> ProgramResult {
+    pub fn set_vote_delegate(ctx: Context<SetVoteDelegate>, new_delegate: Pubkey) -> Result<()> {
         ctx.accounts.set_vote_delegate(new_delegate)
     }
 
     /// Set locker params.
     #[access_control(ctx.accounts.validate())]
-    pub fn set_locker_params(ctx: Context<SetLockerParams>, params: LockerParams) -> ProgramResult {
+    pub fn set_locker_params(ctx: Context<SetLockerParams>, params: LockerParams) -> Result<()> {
         ctx.accounts.set_locker_params(params)
     }
 
@@ -91,16 +91,14 @@ pub mod locked_voter {
     pub fn approve_program_lock_privilege(
         ctx: Context<ApproveProgramLockPrivilege>,
         _bump: u8,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         ctx.accounts
             .approve_program_lock_privilege(*unwrap_int!(ctx.bumps.get("whitelist_entry")))
     }
 
     /// Close a [LockerWhitelistEntry] revoking program's CPI privilege.
     #[access_control(ctx.accounts.validate())]
-    pub fn revoke_program_lock_privilege(
-        ctx: Context<RevokeProgramLockPrivilege>,
-    ) -> ProgramResult {
+    pub fn revoke_program_lock_privilege(ctx: Context<RevokeProgramLockPrivilege>) -> Result<()> {
         ctx.accounts.revoke_program_lock_privilege()
     }
 }

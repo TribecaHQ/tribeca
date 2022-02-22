@@ -11,7 +11,7 @@ pub struct SetVoteDelegate<'info> {
 }
 
 impl<'info> SetVoteDelegate<'info> {
-    pub fn set_vote_delegate(&mut self, new_delegate: Pubkey) -> ProgramResult {
+    pub fn set_vote_delegate(&mut self, new_delegate: Pubkey) -> Result<()> {
         let old_delegate = self.escrow.vote_delegate;
         self.escrow.vote_delegate = new_delegate;
 
@@ -26,7 +26,7 @@ impl<'info> SetVoteDelegate<'info> {
 }
 
 impl<'info> Validate<'info> for SetVoteDelegate<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.escrow.owner, self.escrow_owner);
 
         Ok(())

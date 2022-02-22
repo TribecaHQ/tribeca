@@ -20,7 +20,7 @@ pub struct ActivateProposal<'info> {
 
 impl<'info> ActivateProposal<'info> {
     /// Activates the proposal.
-    pub fn activate_proposal(&mut self) -> ProgramResult {
+    pub fn activate_proposal(&mut self) -> Result<()> {
         let seeds: &[&[&[u8]]] = locker_seeds!(self.locker);
 
         govern::cpi::activate_proposal(
@@ -50,7 +50,7 @@ impl<'info> ActivateProposal<'info> {
 }
 
 impl<'info> Validate<'info> for ActivateProposal<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.locker, self.governor.electorate);
         assert_keys_eq!(self.governor, self.locker.governor);
         assert_keys_eq!(self.proposal.governor, self.governor);

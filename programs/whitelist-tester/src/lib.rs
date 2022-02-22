@@ -12,7 +12,7 @@ pub mod whitelist_tester {
         ctx: Context<'_, '_, '_, 'info, LockTokens<'info>>,
         amount: u64,
         duration: i64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let cpi_accounts = locked_voter::cpi::accounts::Lock {
             locker: ctx.accounts.locker.to_account_info(),
             escrow: ctx.accounts.escrow.to_account_info(),
