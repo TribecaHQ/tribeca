@@ -52,6 +52,7 @@ jobs:
       - name: Install Yarn dependencies
         run: |
           yarn cache clean --all
+          set -x YARN_CHECKSUM_BEHAVIOR update
           yarn install
       - run: ./scripts/generate-idl-types.sh
       - run: yarn build
@@ -129,6 +130,7 @@ jobs:
 
       - run: |
           yarn cache clean --all
+          set -x YARN_CHECKSUM_BEHAVIOR update
           nix shell .#yarn --command yarn install
       - name: Generate IDL types
         run: nix shell .#ci --command yarn idl:generate:nolint
