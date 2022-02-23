@@ -215,7 +215,7 @@ __metadata:
     pako: ^2.0.3
     snake-case: ^3.0.4
     toml: ^3.0.0
-  checksum: 81eb27cd7e230874334fc817b2f75b27cbaa14587849ae479b0fe07b0ad29cb270a94c35854e00b9d438474781b88fa0ed02dc23a60bbc6dff6fa0c862f43aa9
+  checksum: cbec19198633cfd0101bee1170b630379457edfea759c493db5174c1e8df35695f81fd26926964b2cc6716a3ddc8d17b4d4195b1f820019947b3e6bc40419535
   languageName: node
   linkType: hard
 
@@ -311,7 +311,7 @@ __metadata:
   peerDependencies:
     "@solana/web3.js": ^1.29.2
     bn.js: ^4 || ^5
-  checksum: 3a9a793641032d079f05e8eb715807b5bd39f2cc85143e263fdada617abc01dc2b39fd6e3b024c7cdc6c4f8ad78d2e5a5fe69fc4ce7e2e3e859cfb158a3020d5
+  checksum: 7f703d4378e93388599aa40aa6941e18ed0366c0457a495a29fb8260c443149be977917b9c93f2aabc19519040b5b9bfa70c20a3b455b6e1c0e76f2be7c53de8
   languageName: node
   linkType: hard
 
