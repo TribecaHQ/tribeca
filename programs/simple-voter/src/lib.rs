@@ -36,10 +36,7 @@ pub mod simple_voter {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn initialize_token_record(
-        ctx: Context<InitializeTokenRecord>,
-        _bump: u8,
-    ) -> Result<()> {
+    pub fn initialize_token_record(ctx: Context<InitializeTokenRecord>, _bump: u8) -> Result<()> {
         let token_record = &mut ctx.accounts.token_record;
         token_record.bump = *unwrap_int!(ctx.bumps.get("token_record"));
         token_record.balance = ctx.accounts.gov_token_vault.amount;
