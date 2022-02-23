@@ -598,8 +598,8 @@ dependencies = [
  "anchor-spl",
  "num-traits",
  "proptest",
- "smart-wallet 0.7.0",
- "vipers 2.0.0",
+ "smart-wallet",
+ "vipers",
 ]
 
 [[package]]
@@ -773,7 +773,7 @@ dependencies = [
  "govern",
  "num-traits",
  "proptest",
- "vipers 2.0.0",
+ "vipers",
 ]
 
 [[package]]
@@ -1198,8 +1198,8 @@ dependencies = [
  "anchor-lang",
  "anchor-spl",
  "govern",
- "smart-wallet 0.6.1",
- "vipers 2.0.0",
+ "smart-wallet",
+ "vipers",
 ]
 
 [[package]]
@@ -1210,22 +1210,12 @@ checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 
 [[package]]
 name = "smart-wallet"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42b6b4bb934e90d48ca6a9244ee8ff7a04d3a2b8c9edd625a411cad72d761ae9"
-dependencies = [
- "anchor-lang",
- "vipers 1.6.1",
-]
-
-[[package]]
-name = "smart-wallet"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5fdbe8621e4f7c0bb925593dcf4e36dd82444516f3e30dc44a67b81096421187"
 dependencies = [
  "anchor-lang",
- "vipers 2.0.0",
+ "vipers",
 ]
 
 [[package]]
@@ -1443,17 +1433,6 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
-
-[[package]]
-name = "vipers"
-version = "1.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9a8dc4892bbdf8c166bc77882e459324209a1f1d315f336a9622605da340450"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "spl-associated-token-account",
-]
 
 [[package]]
 name = "vipers"
