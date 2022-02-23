@@ -50,7 +50,9 @@ jobs:
             ${{ runner.os }}-modules-
 
       - name: Install Yarn dependencies
-        run: yarn install
+        run: |
+          yarn cache clean --all
+          yarn install
       - run: ./scripts/generate-idl-types.sh
       - run: yarn build
       - run: yarn typecheck
@@ -125,7 +127,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-modules-
 
-      - run: nix shell .#yarn --command yarn install
+      - run: |
+        yarn cache clean --all
+        nix shell .#yarn --command yarn install
       - name: Generate IDL types
         run: nix shell .#ci --command yarn idl:generate:nolint
       - run: yarn build
