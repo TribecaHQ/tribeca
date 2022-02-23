@@ -773,7 +773,7 @@ dependencies = [
  "govern",
  "num-traits",
  "proptest",
- "vipers 1.6.1",
+ "vipers 2.0.0",
 ]
 
 [[package]]
@@ -1199,7 +1199,7 @@ dependencies = [
  "anchor-spl",
  "govern",
  "smart-wallet 0.6.1",
- "vipers 1.6.1",
+ "vipers 2.0.0",
 ]
 
 [[package]]
