@@ -116,6 +116,7 @@ pub struct InitializeElectorate<'info> {
     /// TODO(michael): Docs
     pub gov_token_mint: Account<'info, Mint>,
     /// TODO(michael): Docs
+    #[account(mut)]
     pub payer: AccountInfo<'info>,
     /// TODO(michael): Docs
     pub system_program: Program<'info, System>,
@@ -141,6 +142,7 @@ pub struct InitializeTokenRecord<'info> {
     /// TODO(michael): Docs
     pub gov_token_vault: Account<'info, TokenAccount>,
     /// TODO(michael): Docs
+    #[account(mut)]
     pub payer: AccountInfo<'info>,
     /// TODO(michael): Docs
     pub system_program: AccountInfo<'info>,
