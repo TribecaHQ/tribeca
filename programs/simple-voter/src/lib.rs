@@ -117,7 +117,7 @@ pub struct InitializeElectorate<'info> {
     pub gov_token_mint: Account<'info, Mint>,
     /// TODO(michael): Docs
     #[account(mut)]
-    pub payer: AccountInfo<'info>,
+    pub payer: Signer<'info>,
     /// TODO(michael): Docs
     pub system_program: Program<'info, System>,
 }
@@ -143,9 +143,9 @@ pub struct InitializeTokenRecord<'info> {
     pub gov_token_vault: Account<'info, TokenAccount>,
     /// TODO(michael): Docs
     #[account(mut)]
-    pub payer: AccountInfo<'info>,
+    pub payer: Signer<'info>,
     /// TODO(michael): Docs
-    pub system_program: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -169,7 +169,7 @@ pub struct TribecaContext<'info> {
     #[account(mut)]
     pub governor: Account<'info, Governor>,
     /// TODO(michael): Docs
-    pub program: AccountInfo<'info>,
+    pub program: Program<'info, govern::program::Govern>,
 }
 
 #[derive(Accounts)]

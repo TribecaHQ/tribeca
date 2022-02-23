@@ -25,10 +25,10 @@ pub struct ApproveProgramLockPrivilege<'info> {
     /// Smart wallet on the [Governor].
     pub smart_wallet: Signer<'info>,
 
-    /// ProgramId of the program to whitelist.
+    /// CHECK: ProgramId of the program to whitelist.
     pub executable_id: UncheckedAccount<'info>,
 
-    /// Owner whitelisted. If set to [System], then the program is whitelisted for all accounts.
+    /// CHECK: Owner whitelisted. If set to [System], then the program is whitelisted for all accounts.
     pub whitelisted_owner: UncheckedAccount<'info>,
 
     /// Payer of the initialization.
@@ -86,7 +86,7 @@ pub struct RevokeProgramLockPrivilege<'info> {
     /// Smart wallet on the [Governor].
     pub smart_wallet: Signer<'info>,
 
-    /// ProgramId of the program to whitelist.
+    /// CHECK: ProgramId of the program to whitelist.
     pub executable_id: UncheckedAccount<'info>,
 
     /// Payer of the initialization.

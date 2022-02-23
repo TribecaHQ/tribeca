@@ -19,7 +19,7 @@ pub struct NewEscrow<'info> {
     )]
     pub escrow: Account<'info, Escrow>,
 
-    /// Authority of the [Escrow] to be created.
+    /// CHECK: Authority of the [Escrow] to be created.
     pub escrow_owner: UncheckedAccount<'info>,
 
     /// Payer of the initialization.

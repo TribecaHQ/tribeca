@@ -20,7 +20,7 @@ pub fn process_cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> Result<(
 pub fn process_withdraw_votes(ctx: Context<VoterContext>) -> Result<()> {
     let seeds: &[&[&[u8]]] = electorate_seeds!(ctx.accounts.electorate);
     let cpi_ctx = CpiContext::new(
-        ctx.accounts.tribeca.program.clone(),
+        ctx.accounts.tribeca.program.to_account_info(),
         ctx.accounts.to_set_vote_accounts(),
     )
     .with_signer(seeds);
