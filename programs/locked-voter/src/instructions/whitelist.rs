@@ -25,10 +25,10 @@ pub struct ApproveProgramLockPrivilege<'info> {
     /// Smart wallet on the [Governor].
     pub smart_wallet: Signer<'info>,
 
-    /// ProgramId of the program to whitelist.
+    /// CHECK: ProgramId of the program to whitelist.
     pub executable_id: UncheckedAccount<'info>,
 
-    /// Owner whitelisted. If set to [System], then the program is whitelisted for all accounts.
+    /// CHECK: Owner whitelisted. If set to [System], then the program is whitelisted for all accounts.
     pub whitelisted_owner: UncheckedAccount<'info>,
 
     /// Payer of the initialization.
@@ -41,7 +41,7 @@ pub struct ApproveProgramLockPrivilege<'info> {
 
 impl<'info> ApproveProgramLockPrivilege<'info> {
     /// Creates a new [LockerWhitelistEntry].
-    pub fn approve_program_lock_privilege(&mut self, bump: u8) -> ProgramResult {
+    pub fn approve_program_lock_privilege(&mut self, bump: u8) -> Result<()> {
         let whitelist_entry = &mut self.whitelist_entry;
         whitelist_entry.bump = bump;
         whitelist_entry.locker = self.locker.key();
@@ -60,7 +60,7 @@ impl<'info> ApproveProgramLockPrivilege<'info> {
 }
 
 impl<'info> Validate<'info> for ApproveProgramLockPrivilege<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.governor.smart_wallet, self.smart_wallet);
         invariant!(
             self.executable_id.executable,
@@ -86,7 +86,7 @@ pub struct RevokeProgramLockPrivilege<'info> {
     /// Smart wallet on the [Governor].
     pub smart_wallet: Signer<'info>,
 
-    /// ProgramId of the program to whitelist.
+    /// CHECK: ProgramId of the program to whitelist.
     pub executable_id: UncheckedAccount<'info>,
 
     /// Payer of the initialization.
@@ -96,7 +96,7 @@ pub struct RevokeProgramLockPrivilege<'info> {
 
 impl<'info> RevokeProgramLockPrivilege<'info> {
     /// Emit event that [LockerWhitelistEntry] was closed.
-    pub fn revoke_program_lock_privilege(&mut self) -> ProgramResult {
+    pub fn revoke_program_lock_privilege(&mut self) -> Result<()> {
         emit!(RevokeLockPrivilegeEvent {
             locker: self.whitelist_entry.locker,
             program_id: self.whitelist_entry.program_id,
@@ -108,7 +108,7 @@ impl<'info> RevokeProgramLockPrivilege<'info> {
 }
 
 impl<'info> Validate<'info> for RevokeProgramLockPrivilege<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.governor.smart_wallet, self.smart_wallet);
         assert_keys_eq!(self.whitelist_entry.program_id, self.executable_id);
 

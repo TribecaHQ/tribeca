@@ -37,7 +37,7 @@ pub mod govern {
         _bump: u8,
         electorate: Pubkey,
         params: GovernanceParameters,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         invariant!(
             params.timelock_delay_seconds >= 0,
             "timelock delay must be at least 0 seconds"
@@ -71,7 +71,7 @@ pub mod govern {
         ctx: Context<CreateProposal>,
         _bump: u8,
         instructions: Vec<ProposalInstruction>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let governor = &mut ctx.accounts.governor;
 
         let proposal = &mut ctx.accounts.proposal;
@@ -108,7 +108,7 @@ pub mod govern {
     /// Only the [Governor::electorate] may call this; that program
     /// may ensure that only certain types of users can activate proposals.
     #[access_control(ctx.accounts.validate())]
-    pub fn activate_proposal(ctx: Context<ActivateProposal>) -> ProgramResult {
+    pub fn activate_proposal(ctx: Context<ActivateProposal>) -> Result<()> {
         let proposal = &mut ctx.accounts.proposal;
         let now = Clock::get()?.unix_timestamp;
         proposal.activated_at = now;
@@ -132,7 +132,7 @@ pub mod govern {
     /// Cancels a proposal.
     /// This is only callable by the creator of the proposal.
     #[access_control(ctx.accounts.validate())]
-    pub fn cancel_proposal(ctx: Context<CancelProposal>) -> ProgramResult {
+    pub fn cancel_proposal(ctx: Context<CancelProposal>) -> Result<()> {
         let proposal = &mut ctx.accounts.proposal;
         proposal.canceled_at = Clock::get()?.unix_timestamp;
 
@@ -146,7 +146,7 @@ pub mod govern {
 
     /// Queues a proposal for execution by the [SmartWallet].
     #[access_control(ctx.accounts.validate())]
-    pub fn queue_proposal(ctx: Context<QueueProposal>, tx_bump: u8) -> ProgramResult {
+    pub fn queue_proposal(ctx: Context<QueueProposal>, tx_bump: u8) -> Result<()> {
         ctx.accounts.queue_transaction(tx_bump)?;
 
         emit!(ProposalQueueEvent {
@@ -160,7 +160,7 @@ pub mod govern {
 
     /// Creates a new [Vote]. Anyone can call this.
     #[access_control(ctx.accounts.validate())]
-    pub fn new_vote(ctx: Context<NewVote>, _bump: u8, voter: Pubkey) -> ProgramResult {
+    pub fn new_vote(ctx: Context<NewVote>, _bump: u8, voter: Pubkey) -> Result<()> {
         let vote = &mut ctx.accounts.vote;
         vote.proposal = ctx.accounts.proposal.key();
         vote.voter = voter;
@@ -175,7 +175,7 @@ pub mod govern {
     /// Sets a [Vote] weight and side.
     /// This may only be called by the [Governor::electorate].
     #[access_control(ctx.accounts.validate())]
-    pub fn set_vote(ctx: Context<SetVote>, side: u8, weight: u64) -> ProgramResult {
+    pub fn set_vote(ctx: Context<SetVote>, side: u8, weight: u64) -> Result<()> {
         let vote = &ctx.accounts.vote;
 
         let proposal = &mut ctx.accounts.proposal;
@@ -204,7 +204,7 @@ pub mod govern {
     pub fn set_governance_params(
         ctx: Context<SetGovernanceParams>,
         params: GovernanceParameters,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let prev_params = ctx.accounts.governor.params;
         ctx.accounts.governor.params = params;
 
@@ -219,10 +219,7 @@ pub mod govern {
 
     /// Sets the electorate of the [Governor].
     #[access_control(ctx.accounts.validate())]
-    pub fn set_electorate(
-        ctx: Context<SetGovernanceParams>,
-        new_electorate: Pubkey,
-    ) -> ProgramResult {
+    pub fn set_electorate(ctx: Context<SetGovernanceParams>, new_electorate: Pubkey) -> Result<()> {
         let prev_electorate = ctx.accounts.governor.electorate;
         ctx.accounts.governor.electorate = new_electorate;
 
@@ -242,7 +239,7 @@ pub mod govern {
         _bump: u8,
         title: String,
         description_link: String,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let proposal_meta = &mut ctx.accounts.proposal_meta;
         proposal_meta.proposal = ctx.accounts.proposal.key();
         proposal_meta.title = title.clone();
@@ -260,7 +257,7 @@ pub mod govern {
 }
 
 /// Errors.
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Invalid vote side.")]
     InvalidVoteSide,

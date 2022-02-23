@@ -88,7 +88,7 @@ pub struct QueueProposal<'info> {
     /// The Proposal to queue.
     #[account(mut)]
     pub proposal: Account<'info, Proposal>,
-    /// The transaction key of the proposal.
+    /// CHECK: The transaction key of the proposal.
     #[account(mut)]
     pub transaction: UncheckedAccount<'info>,
     /// The Smart Wallet.

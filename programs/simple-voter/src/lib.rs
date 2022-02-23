@@ -24,7 +24,7 @@ pub mod simple_voter {
         ctx: Context<InitializeElectorate>,
         _bump: u8,
         proposal_threshold: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let electorate = &mut ctx.accounts.electorate;
         electorate.bump = *unwrap_int!(ctx.bumps.get("electorate"));
         electorate.proposal_threshold = proposal_threshold;
@@ -36,10 +36,7 @@ pub mod simple_voter {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn initialize_token_record(
-        ctx: Context<InitializeTokenRecord>,
-        _bump: u8,
-    ) -> ProgramResult {
+    pub fn initialize_token_record(ctx: Context<InitializeTokenRecord>, _bump: u8) -> Result<()> {
         let token_record = &mut ctx.accounts.token_record;
         token_record.bump = *unwrap_int!(ctx.bumps.get("token_record"));
         token_record.balance = ctx.accounts.gov_token_vault.amount;
@@ -51,12 +48,12 @@ pub mod simple_voter {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn activate_proposal(ctx: Context<ActivateProposal>) -> ProgramResult {
+    pub fn activate_proposal(ctx: Context<ActivateProposal>) -> Result<()> {
         processor::proposer::activate_proposal(ctx)
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn deposit_tokens(ctx: Context<TokenContext>, amount: u64) -> ProgramResult {
+    pub fn deposit_tokens(ctx: Context<TokenContext>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_to_vault(amount)?;
 
         let token_record = &mut ctx.accounts.token_record;
@@ -68,7 +65,7 @@ pub mod simple_voter {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn withdraw_tokens(ctx: Context<TokenContext>, amount: u64) -> ProgramResult {
+    pub fn withdraw_tokens(ctx: Context<TokenContext>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_from_vault(amount)?;
 
         let token_record = &mut ctx.accounts.token_record;
@@ -84,16 +81,16 @@ pub mod simple_voter {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> ProgramResult {
+    pub fn cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> Result<()> {
         processor::voter::process_cast_votes(ctx, vote_side)
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn withdraw_votes(ctx: Context<VoterContext>) -> ProgramResult {
+    pub fn withdraw_votes(ctx: Context<VoterContext>) -> Result<()> {
         processor::voter::process_withdraw_votes(ctx)
     }
 
-    pub fn finalize_votes(ctx: Context<FinalizeVote>) -> ProgramResult {
+    pub fn finalize_votes(ctx: Context<FinalizeVote>) -> Result<()> {
         invariant!(ctx.accounts.proposal.get_state()? != ProposalState::Active);
         let token_record = &mut ctx.accounts.token_record;
         token_record.unfinalized_votes -= 1;
@@ -119,7 +116,8 @@ pub struct InitializeElectorate<'info> {
     /// TODO(michael): Docs
     pub gov_token_mint: Account<'info, Mint>,
     /// TODO(michael): Docs
-    pub payer: AccountInfo<'info>,
+    #[account(mut)]
+    pub payer: Signer<'info>,
     /// TODO(michael): Docs
     pub system_program: Program<'info, System>,
 }
@@ -144,9 +142,10 @@ pub struct InitializeTokenRecord<'info> {
     /// TODO(michael): Docs
     pub gov_token_vault: Account<'info, TokenAccount>,
     /// TODO(michael): Docs
-    pub payer: AccountInfo<'info>,
+    #[account(mut)]
+    pub payer: Signer<'info>,
     /// TODO(michael): Docs
-    pub system_program: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -170,7 +169,7 @@ pub struct TribecaContext<'info> {
     #[account(mut)]
     pub governor: Account<'info, Governor>,
     /// TODO(michael): Docs
-    pub program: AccountInfo<'info>,
+    pub program: Program<'info, govern::program::Govern>,
 }
 
 #[derive(Accounts)]
@@ -219,7 +218,7 @@ pub struct VoterContext<'info> {
     pub tribeca: TribecaContext<'info>,
 }
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Below proposing threshold.")]
     BelowProposingThreshold,

@@ -34,7 +34,7 @@ pub struct NewLocker<'info> {
 
 impl<'info> NewLocker<'info> {
     /// Creates a new [Locker].
-    pub fn new_locker(&mut self, bump: u8, params: LockerParams) -> ProgramResult {
+    pub fn new_locker(&mut self, bump: u8, params: LockerParams) -> Result<()> {
         let locker = &mut self.locker;
         locker.token_mint = self.token_mint.key();
         locker.governor = self.governor.key();
@@ -54,7 +54,7 @@ impl<'info> NewLocker<'info> {
 }
 
 impl<'info> Validate<'info> for NewLocker<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         Ok(())
     }
 }
