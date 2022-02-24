@@ -1,6 +1,6 @@
 {
   "name": "@tribecahq/tribeca-sdk",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "The TypeScript SDK for Tribeca, an open standard and toolkit for launching DAOs on Solana.",
   "keywords": [
     "solana",
