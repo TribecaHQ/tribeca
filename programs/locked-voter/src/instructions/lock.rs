@@ -42,7 +42,7 @@ pub struct SetLockerParams<'info> {
 }
 
 impl<'info> SetLockerParams<'info> {
-    pub fn set_locker_params(&mut self, params: LockerParams) -> ProgramResult {
+    pub fn set_locker_params(&mut self, params: LockerParams) -> Result<()> {
         let prev_params = self.locker.params;
         self.locker.params = params;
 
@@ -57,7 +57,7 @@ impl<'info> SetLockerParams<'info> {
 }
 
 impl<'info> Validate<'info> for SetLockerParams<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.governor, self.locker.governor, "governor mismatch");
         assert_keys_eq!(
             self.smart_wallet,
@@ -69,7 +69,7 @@ impl<'info> Validate<'info> for SetLockerParams<'info> {
 }
 
 impl<'info> Lock<'info> {
-    pub fn lock(&mut self, amount: u64, duration: i64) -> ProgramResult {
+    pub fn lock(&mut self, amount: u64, duration: i64) -> Result<()> {
         invariant!(
             unwrap_int!(duration.to_u64()) >= self.locker.params.min_stake_duration,
             LockupDurationTooShort
@@ -134,7 +134,7 @@ impl<'info> Lock<'info> {
         Ok(())
     }
 
-    pub fn check_whitelisted(&self, ra: &[AccountInfo]) -> ProgramResult {
+    pub fn check_whitelisted(&self, ra: &[AccountInfo]) -> Result<()> {
         invariant!(ra.len() == 2, MustProvideWhitelist);
         let accounts_iter = &mut ra.iter();
         let ix_sysvar_account_info = next_account_info(accounts_iter)?;
@@ -165,7 +165,7 @@ impl<'info> Lock<'info> {
 }
 
 impl<'info> Validate<'info> for Lock<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.locker, self.escrow.locker);
         assert_keys_eq!(self.escrow.tokens, self.escrow_tokens);
         assert_keys_eq!(self.escrow.owner, self.escrow_owner);

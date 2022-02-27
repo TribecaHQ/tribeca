@@ -30,7 +30,7 @@ pub struct Exit<'info> {
 }
 
 impl<'info> Exit<'info> {
-    pub fn exit(&mut self) -> ProgramResult {
+    pub fn exit(&mut self) -> Result<()> {
         let seeds: &[&[&[u8]]] = escrow_seeds!(self.escrow);
 
         // transfer tokens from the escrow
@@ -67,7 +67,7 @@ impl<'info> Exit<'info> {
 }
 
 impl<'info> Validate<'info> for Exit<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.locker, self.escrow.locker);
         assert_keys_eq!(self.escrow.owner, self.escrow_owner);
         assert_keys_eq!(self.escrow.tokens, self.escrow_tokens);

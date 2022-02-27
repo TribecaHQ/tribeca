@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token;
 
 impl TokenContext<'_> {
-    pub fn transfer_to_vault(&self, amount: u64) -> ProgramResult {
+    pub fn transfer_to_vault(&self, amount: u64) -> Result<()> {
         let cpi_ctx = CpiContext::new(
             self.token_program.to_account_info(),
             token::Transfer {
@@ -16,7 +16,7 @@ impl TokenContext<'_> {
         token::transfer(cpi_ctx, amount)
     }
 
-    pub fn transfer_from_vault(&self, amount: u64) -> ProgramResult {
+    pub fn transfer_from_vault(&self, amount: u64) -> Result<()> {
         let seeds = token_record_signer_seeds!(self.token_record);
         let signer_seeds = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(

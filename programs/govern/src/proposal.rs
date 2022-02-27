@@ -86,7 +86,7 @@ impl Proposal {
         &mut self,
         vote_side: VoteSide,
         vote_weight: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         if vote_weight == 0 {
             return Ok(());
         }
@@ -106,11 +106,7 @@ impl Proposal {
     }
 
     /// Adds to the total weight of a vote for a [Proposal].
-    pub(crate) fn add_vote_weight(
-        &mut self,
-        vote_side: VoteSide,
-        vote_weight: u64,
-    ) -> ProgramResult {
+    pub(crate) fn add_vote_weight(&mut self, vote_side: VoteSide, vote_weight: u64) -> Result<()> {
         if vote_weight == 0 {
             return Ok(());
         }
@@ -199,7 +195,7 @@ impl Proposal {
 
 impl<'info> QueueProposal<'info> {
     /// Queues a Transaction into the Smart Wallet.
-    pub fn queue_transaction(&mut self, tx_bump: u8) -> ProgramResult {
+    pub fn queue_transaction(&mut self, tx_bump: u8) -> Result<()> {
         let seeds = governor_seeds!(self.governor);
         let signer_seeds = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(
