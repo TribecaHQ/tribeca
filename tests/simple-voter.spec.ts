@@ -1,7 +1,6 @@
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
-import { GokiSDK } from "@gokiprotocol/client";
 import { BN } from "@project-serum/anchor";
-import { expectTX } from "@saberhq/chai-solana";
+import { assertTXSuccess, expectTX } from "@saberhq/chai-solana";
 import {
   createMint,
   getATAAddress,
@@ -14,25 +13,25 @@ import { expect } from "chai";
 import invariant from "tiny-invariant";
 
 import { DEFAULT_GOVERNANCE_PARAMETERS } from "../src";
-import { SimpleVoterWrapper, VoteSide } from "../src/wrappers";
+import type { SimpleVoterWrapper } from "../src/wrappers";
+import { VoteSide } from "../src/wrappers";
 import type { GovernorWrapper } from "../src/wrappers/govern/governor";
 import { findVoteAddress } from "../src/wrappers/govern/pda";
 import {
   findSimpleElectorateAddress,
   findTokenRecordAddress,
 } from "../src/wrappers/simpleVoter/pda";
+import { createSimpleElectorate } from "../src/wrappers/simpleVoter/setup";
 import {
   createUser,
   DUMMY_INSTRUCTIONS,
   INITIAL_MINT_AMOUNT,
   makeSDK,
-  setupGovernor,
   ZERO,
 } from "./workspace";
 
 describe("Simple Voter", () => {
   const sdk = makeSDK();
-  const gokiSDK = GokiSDK.load({ provider: sdk.provider });
 
   let base: PublicKey;
   let govTokenMint: PublicKey;
@@ -46,25 +45,34 @@ describe("Simple Voter", () => {
 
     const baseKP = Keypair.generate();
     base = baseKP.publicKey;
-    const [electorateKey] = await findSimpleElectorateAddress(base);
 
-    const owners = [sdk.provider.wallet.publicKey];
-    const { governorWrapper, smartWalletWrapper } = await setupGovernor({
-      electorate: electorateKey,
+    const {
+      simpleVoterWrapper,
+      createTXs,
+      governorWrapper,
+      smartWalletWrapper,
+    } = await createSimpleElectorate({
       sdk,
-      gokiSDK,
-      owners,
-    });
-
-    const { electorate, tx: tx1 } = await sdk.createSimpleElectorate({
-      baseKP,
+      electorateBaseKP: baseKP,
       proposalThreshold: INITIAL_MINT_AMOUNT,
-      governor: governorWrapper.governorKey,
+      owners: [sdk.provider.wallet.publicKey],
       govTokenMint,
+      governanceParameters: {
+        quorumVotes: INITIAL_MINT_AMOUNT,
+        votingDelay: ZERO,
+        votingPeriod: new BN(2),
+      },
+      smartWalletParameters: {
+        // threshold = 1 allows us to test the whitelist stuff
+        threshold: 1,
+      },
     });
-    await expectTX(tx1, "initialize electorate").to.be.fulfilled;
 
-    voterW = await SimpleVoterWrapper.load(sdk, electorate);
+    for (const { title, tx } of createTXs) {
+      await assertTXSuccess(tx, title);
+    }
+
+    voterW = simpleVoterWrapper;
     governorW = governorWrapper;
     smartWalletW = smartWalletWrapper;
   });
@@ -89,14 +97,18 @@ describe("Simple Voter", () => {
     const electorateData = await voterW.fetchVoterMetadata();
     const [expectedElectorate, bump] = await findSimpleElectorateAddress(base);
 
-    expect(electorate).eqAddress(expectedElectorate);
+    expect(electorate, "electorate").eqAddress(expectedElectorate);
     expect(electorateData.bump).equal(bump);
     expect(electorateData.proposalThreshold.toString()).eq(
       INITIAL_MINT_AMOUNT.toString()
     );
-    expect(electorateData.base).eqAddress(base);
-    expect(electorateData.govTokenMint).eqAddress(govTokenMint);
-    expect(electorateData.governor).eqAddress(governorW.governorKey);
+    expect(electorateData.base, "base").eqAddress(base);
+    expect(electorateData.govTokenMint, "gov token mint").eqAddress(
+      govTokenMint
+    );
+    expect(electorateData.governor, "governor").eqAddress(
+      governorW.governorKey
+    );
   });
 
   describe("Token Record", () => {

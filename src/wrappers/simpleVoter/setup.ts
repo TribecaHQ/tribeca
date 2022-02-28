@@ -2,43 +2,47 @@ import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
 import type { PublicKey, Signer } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
+import type BN from "bn.js";
 
-import type { GovernorWrapper, LockerParams } from "../..";
-import { DEFAULT_LOCKER_PARAMS } from "../../constants";
+import type { GovernorWrapper } from "../..";
+import { DEFAULT_PROPOSAL_THRESHOLD } from "../..";
 import type { CreateGovernorWithElectorateParams } from "../govern/setup";
 import { createGovernorWithElectorate } from "../govern/setup";
-import { LockerWrapper } from "./locker";
+import { SimpleVoterWrapper } from ".";
 
-export interface CreateLockerParams
+/**
+ * Creates a new simple electorate.
+ */
+export interface CreateSimpleElectorateParams
   extends Omit<CreateGovernorWithElectorateParams, "createElectorate"> {
   /**
    * Mint of the token staked for veTokens.
    */
   govTokenMint: PublicKey;
   /**
-   * Parameters for the locker.
+   * Proposal threshold.
    */
-  lockerParams?: Partial<LockerParams>;
+  proposalThreshold?: BN;
   /**
-   * Base of the locker.
+   * Base of the electorate.
    */
-  lockerBaseKP?: Signer;
+  electorateBaseKP?: Signer;
 }
 
 /**
  * Creates a new Locker.
  * @returns
  */
-export const createLocker = async ({
+export const createSimpleElectorate = async ({
   sdk,
   govTokenMint,
-  lockerParams = DEFAULT_LOCKER_PARAMS,
-  lockerBaseKP = Keypair.generate(),
+  proposalThreshold = DEFAULT_PROPOSAL_THRESHOLD,
+  electorateBaseKP = Keypair.generate(),
   ...createGovernorParams
-}: CreateLockerParams): Promise<{
+}: CreateSimpleElectorateParams): Promise<{
   governorWrapper: GovernorWrapper;
   smartWalletWrapper: SmartWalletWrapper;
-  lockerWrapper: LockerWrapper;
+  simpleVoterWrapper: SimpleVoterWrapper;
   createTXs: {
     title: string;
     tx: TransactionEnvelope;
@@ -46,15 +50,15 @@ export const createLocker = async ({
 }> => {
   const { electorate, ...governor } = await createGovernorWithElectorate({
     createElectorate: async (governorKey) => {
-      const { locker, tx: tx1 } = await sdk.createLocker({
-        ...lockerParams,
-        baseKP: lockerBaseKP,
+      const { electorate, tx } = await sdk.createSimpleElectorate({
+        baseKP: electorateBaseKP,
+        proposalThreshold,
         governor: governorKey,
         govTokenMint,
       });
       return {
-        key: locker,
-        tx: tx1,
+        key: electorate,
+        tx,
       };
     },
     sdk,
@@ -62,7 +66,7 @@ export const createLocker = async ({
   });
   return {
     ...governor,
-    lockerWrapper: new LockerWrapper(
+    simpleVoterWrapper: new SimpleVoterWrapper(
       sdk,
       electorate,
       governor.governorWrapper.governorKey

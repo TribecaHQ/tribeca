@@ -1,5 +1,4 @@
-import { GokiSDK } from "@gokiprotocol/client";
-import { expectTX } from "@saberhq/chai-solana";
+import { assertTXSuccess, expectTX } from "@saberhq/chai-solana";
 import type { SendTransactionError } from "@solana/web3.js";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import type BN from "bn.js";
@@ -7,17 +6,20 @@ import { expect } from "chai";
 import { zip } from "lodash";
 import invariant from "tiny-invariant";
 
-import { DEFAULT_VOTE_DELAY, DEFAULT_VOTE_PERIOD } from "../src";
+import {
+  createGovernorWithElectorate,
+  DEFAULT_VOTE_DELAY,
+  DEFAULT_VOTE_PERIOD,
+} from "../src";
 import type { GovernorWrapper } from "../src/wrappers/govern/governor";
 import {
   findGovernorAddress,
   findProposalAddress,
 } from "../src/wrappers/govern/pda";
-import { DUMMY_INSTRUCTIONS, makeSDK, setupGovernor, ZERO } from "./workspace";
+import { DUMMY_INSTRUCTIONS, makeSDK, ZERO } from "./workspace";
 
 describe("Govern", () => {
   const sdk = makeSDK();
-  const gokiSDK = GokiSDK.load({ provider: sdk.provider });
 
   let governorW: GovernorWrapper;
   let smartWallet: PublicKey;
@@ -25,12 +27,16 @@ describe("Govern", () => {
   before(async () => {
     const owners = [sdk.provider.wallet.publicKey];
     const electorate = Keypair.generate().publicKey;
-    const { governorWrapper, smartWalletWrapper } = await setupGovernor({
-      electorate,
-      sdk,
-      gokiSDK,
-      owners,
-    });
+    const { governorWrapper, smartWalletWrapper, createTXs } =
+      await createGovernorWithElectorate({
+        createElectorate: () => Promise.resolve({ key: electorate }),
+        sdk,
+        owners,
+      });
+
+    for (const { tx, title } of createTXs) {
+      await assertTXSuccess(tx, title);
+    }
 
     smartWallet = smartWalletWrapper.key;
     governorW = governorWrapper;

@@ -1,13 +1,58 @@
-import type { GokiSDK, SmartWalletWrapper } from "@gokiprotocol/client";
+import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, Signer } from "@solana/web3.js";
 import { Keypair } from "@solana/web3.js";
 import BN from "bn.js";
 
-import type { GovernanceParameters, TribecaSDK } from "../..";
-import { DEFAULT_GOVERNANCE_PARAMETERS } from "../..";
+import type {
+  GovernanceParameters,
+  SmartWalletParameters,
+  TribecaSDK,
+} from "../..";
+import {
+  DEFAULT_GOVERNANCE_PARAMETERS,
+  DEFAULT_GOVERNOR_SMART_WALLET_PARAMS,
+} from "../..";
 import type { GovernorWrapper } from "..";
 import { findGovernorAddress } from "..";
+
+/**
+ * Parameters for the {@link createGovernorWithElectorate} function.
+ */
+export interface CreateGovernorWithElectorateParams {
+  /**
+   * Function to create an electorate.
+   */
+  createElectorate: (
+    governor: PublicKey
+  ) => Promise<{ key: PublicKey; tx?: TransactionEnvelope }>;
+  /**
+   * Tribeca SDK.
+   */
+  sdk: TribecaSDK;
+  /**
+   * Additional owners on the governance smart wallet.
+   *
+   * For the Tribeca Trinity, this should be an owner invoker and an "emergency DAO" Smart Wallet.
+   */
+  owners?: PublicKey[];
+  /**
+   * Additional governance parameters.
+   */
+  governanceParameters?: Partial<GovernanceParameters>;
+  /**
+   * Base of the governor.
+   */
+  governorBaseKP?: Signer;
+  /**
+   * Base of the smart wallet.
+   */
+  smartWalletBaseKP?: Keypair;
+  /**
+   * Additional smart wallet parameters.
+   */
+  smartWalletParameters?: Partial<SmartWalletParameters>;
+}
 
 /**
  * Creates a Governor.
@@ -16,28 +61,12 @@ import { findGovernorAddress } from "..";
 export const createGovernorWithElectorate = async ({
   createElectorate,
   sdk,
-  gokiSDK,
   owners = [sdk.provider.wallet.publicKey],
   governanceParameters = DEFAULT_GOVERNANCE_PARAMETERS,
-  govBaseKP = Keypair.generate(),
+  governorBaseKP = Keypair.generate(),
   smartWalletBaseKP = Keypair.generate(),
-}: {
-  createElectorate: (
-    governor: PublicKey
-  ) => Promise<{ key: PublicKey; tx: TransactionEnvelope }>;
-  sdk: TribecaSDK;
-  gokiSDK: GokiSDK;
-  owners?: PublicKey[];
-  governanceParameters?: Partial<GovernanceParameters>;
-  /**
-   * Base of the governor.
-   */
-  govBaseKP?: Keypair;
-  /**
-   * Base of the smart wallet.
-   */
-  smartWalletBaseKP?: Keypair;
-}): Promise<{
+  smartWalletParameters = DEFAULT_GOVERNOR_SMART_WALLET_PARAMS,
+}: CreateGovernorWithElectorateParams): Promise<{
   governorWrapper: GovernorWrapper;
   smartWalletWrapper: SmartWalletWrapper;
   electorate: PublicKey;
@@ -46,17 +75,29 @@ export const createGovernorWithElectorate = async ({
     tx: TransactionEnvelope;
   }[];
 }> => {
-  const [governor] = await findGovernorAddress(govBaseKP.publicKey);
+  const [governor] = await findGovernorAddress(governorBaseKP.publicKey);
 
   const createTXs: {
     title: string;
     tx: TransactionEnvelope;
   }[] = [];
 
-  const { smartWalletWrapper, tx: tx1 } = await gokiSDK.newSmartWallet({
-    owners: [...owners, governor],
-    threshold: new BN(2),
-    numOwners: 3,
+  if (owners.find((owner) => owner.equals(governor))) {
+    throw new Error("governor should not be provided in owners list");
+  }
+
+  const allOwners = [...owners, governor];
+  const smartWalletParams: SmartWalletParameters = {
+    ...DEFAULT_GOVERNOR_SMART_WALLET_PARAMS,
+    ...smartWalletParameters,
+    maxOwners: allOwners.length,
+  };
+
+  const { smartWalletWrapper, tx: tx1 } = await sdk.goki.newSmartWallet({
+    owners: allOwners,
+    threshold: new BN(smartWalletParams.threshold),
+    numOwners: smartWalletParams.maxOwners,
+    delay: new BN(smartWalletParams.delay),
     base: smartWalletBaseKP,
   });
   createTXs.push({
@@ -71,7 +112,7 @@ export const createGovernorWithElectorate = async ({
   const { wrapper: governorWrapper, tx: tx2 } = await sdk.govern.createGovernor(
     {
       ...governanceParameters,
-      baseKP: govBaseKP,
+      baseKP: governorBaseKP,
       electorate,
       smartWallet: smartWalletWrapper.key,
     }
@@ -81,10 +122,12 @@ export const createGovernorWithElectorate = async ({
     tx: tx2,
   });
 
-  createTXs.push({
-    title: "Create Electorate",
-    tx: createElectorateTX,
-  });
+  if (createElectorateTX) {
+    createTXs.push({
+      title: "Create Electorate",
+      tx: createElectorateTX,
+    });
+  }
 
   return {
     governorWrapper,

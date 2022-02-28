@@ -1,7 +1,10 @@
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
-import { GokiSDK } from "@gokiprotocol/client";
 import { newProgram } from "@saberhq/anchor-contrib";
-import { assertTXThrows, expectTX } from "@saberhq/chai-solana";
+import {
+  assertTXSuccess,
+  assertTXThrows,
+  expectTX,
+} from "@saberhq/chai-solana";
 import { TransactionEnvelope } from "@saberhq/solana-contrib";
 import {
   createMint,
@@ -52,7 +55,6 @@ import {
   executeTransactionBySmartWallet,
   INITIAL_MINT_AMOUNT,
   makeSDK,
-  setupGovernor,
   WhitelistTesterJSON,
   ZERO,
 } from "./workspace";
@@ -67,7 +69,6 @@ const expectLockedSupply = async (
 
 describe("Locked Voter", () => {
   const sdk = makeSDK();
-  const gokiSDK = GokiSDK.load({ provider: sdk.provider });
 
   let base: PublicKey;
   let govTokenMint: PublicKey;
@@ -81,29 +82,27 @@ describe("Locked Voter", () => {
 
     const baseKP = Keypair.generate();
     base = baseKP.publicKey;
-    const [lockerKey] = await findLockerAddress(base);
 
     const owners = [sdk.provider.wallet.publicKey];
-    const { governorWrapper, smartWalletWrapper } = await setupGovernor({
-      electorate: lockerKey,
-      sdk,
-      gokiSDK,
-      owners,
-    });
 
-    const { locker, tx: tx1 } = await sdk.createLocker({
-      baseKP,
-      proposalActivationMinVotes: INITIAL_MINT_AMOUNT,
-      governor: governorWrapper.governorKey,
-      govTokenMint,
-    });
-    await expectTX(tx1, "initialize locker").to.be.fulfilled;
+    const { createTXs, lockerWrapper, smartWalletWrapper, governorWrapper } =
+      await sdk.createLockerAndGovernor({
+        owners,
+        lockerBaseKP: baseKP,
+        govTokenMint,
+        lockerParams: {
+          proposalActivationMinVotes: INITIAL_MINT_AMOUNT,
+        },
+        smartWalletParameters: {
+          threshold: 1,
+        },
+      });
 
-    lockerW = await LockerWrapper.load(
-      sdk,
-      locker,
-      governorWrapper.governorKey
-    );
+    for (const { tx, title } of createTXs) {
+      await assertTXSuccess(tx, title);
+    }
+
+    lockerW = lockerWrapper;
     governorW = governorWrapper;
     smartWalletW = smartWalletWrapper;
   });

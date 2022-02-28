@@ -93,3 +93,30 @@ export const DEFAULT_LOCKER_PARAMS: LockerParams = {
   maxStakeVoteMultiplier: 10,
   whitelistEnabled: false,
 };
+
+/**
+ * Smart wallet creation parameters.
+ */
+export interface SmartWalletParameters {
+  /**
+   * Number of signers required to execute a smart wallet transaction. This is useful for testing.
+   */
+  threshold: number;
+  /**
+   * Maximum number of owners on the smart wallet.
+   */
+  maxOwners: number;
+  /**
+   * Timelock delay.
+   */
+  delay: number;
+}
+
+/**
+ * Default parameters for the Governor smart wallet.
+ */
+export const DEFAULT_GOVERNOR_SMART_WALLET_PARAMS: SmartWalletParameters = {
+  threshold: 2,
+  maxOwners: 3,
+  delay: 0,
+};

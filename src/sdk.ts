@@ -1,3 +1,4 @@
+import { GokiSDK } from "@gokiprotocol/client";
 import type { BN } from "@project-serum/anchor";
 import { newProgramMap } from "@saberhq/anchor-contrib";
 import type { AugmentedProvider, Provider } from "@saberhq/solana-contrib";
@@ -15,19 +16,33 @@ import {
   TRIBECA_IDLS,
 } from "./constants";
 import type { LockerParams } from "./programs/lockedVoter";
-import { GovernWrapper } from "./wrappers";
+import type { CreateLockerParams } from "./wrappers";
+import { createLocker, GovernWrapper } from "./wrappers";
 import { findLockerAddress } from "./wrappers/lockedVoter/pda";
 import { findSimpleElectorateAddress } from "./wrappers/simpleVoter/pda";
 import type { PendingElectorate } from "./wrappers/simpleVoter/types";
 
 /**
- * TribecaSDK.
+ * Tribeca protocol SDK.
  */
 export class TribecaSDK {
+  /**
+   * The Goki SDK.
+   */
+  readonly goki: GokiSDK;
+
   constructor(
+    /**
+     * Provider.
+     */
     readonly provider: AugmentedProvider,
+    /**
+     * Programs.
+     */
     readonly programs: TribecaPrograms
-  ) {}
+  ) {
+    this.goki = GokiSDK.load({ provider });
+  }
 
   /**
    * Creates a new instance of the SDK with the given keypair.
@@ -58,6 +73,10 @@ export class TribecaSDK {
     return new GovernWrapper(this);
   }
 
+  /**
+   * Creates a new simple electorate.
+   * @returns
+   */
   async createSimpleElectorate({
     proposalThreshold,
     governor,
@@ -65,7 +84,7 @@ export class TribecaSDK {
     baseKP = Keypair.generate(),
   }: {
     proposalThreshold: BN;
-    baseKP?: Keypair;
+    baseKP?: Signer;
     governor: PublicKey;
     govTokenMint: PublicKey;
   }): Promise<PendingElectorate> {
@@ -98,6 +117,15 @@ export class TribecaSDK {
   }
 
   /**
+   * Creates a new Locker and Governor.
+   * @param params
+   * @returns
+   */
+  async createLockerAndGovernor(params: Omit<CreateLockerParams, "sdk">) {
+    return await createLocker({ ...params, sdk: this });
+  }
+
+  /**
    * Creates a Locker, which is an Electorate that supports vote locking.
    * @returns
    */
@@ -107,7 +135,7 @@ export class TribecaSDK {
     baseKP = Keypair.generate(),
     ...providedLockerParams
   }: {
-    baseKP?: Keypair;
+    baseKP?: Signer;
     governor: PublicKey;
     govTokenMint: PublicKey;
   } & Partial<LockerParams>): Promise<{
