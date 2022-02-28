@@ -53,6 +53,7 @@ describe("Simple Voter", () => {
       smartWalletWrapper,
     } = await createSimpleElectorate({
       sdk,
+      electorateBaseKP: baseKP,
       proposalThreshold: INITIAL_MINT_AMOUNT,
       owners: [sdk.provider.wallet.publicKey],
       govTokenMint,
@@ -96,14 +97,18 @@ describe("Simple Voter", () => {
     const electorateData = await voterW.fetchVoterMetadata();
     const [expectedElectorate, bump] = await findSimpleElectorateAddress(base);
 
-    expect(electorate).eqAddress(expectedElectorate);
+    expect(electorate, "electorate").eqAddress(expectedElectorate);
     expect(electorateData.bump).equal(bump);
     expect(electorateData.proposalThreshold.toString()).eq(
       INITIAL_MINT_AMOUNT.toString()
     );
-    expect(electorateData.base).eqAddress(base);
-    expect(electorateData.govTokenMint).eqAddress(govTokenMint);
-    expect(electorateData.governor).eqAddress(governorW.governorKey);
+    expect(electorateData.base, "base").eqAddress(base);
+    expect(electorateData.govTokenMint, "gov token mint").eqAddress(
+      govTokenMint
+    );
+    expect(electorateData.governor, "governor").eqAddress(
+      governorW.governorKey
+    );
   });
 
   describe("Token Record", () => {
