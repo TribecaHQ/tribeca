@@ -13,6 +13,7 @@
 //! message us our team directly at [team@tribeca.so](mailto:team@tribeca.so).
 #![deny(rustdoc::all)]
 #![deny(missing_docs)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 use solana_program::pubkey::Pubkey;
 use static_pubkey::static_pubkey;
