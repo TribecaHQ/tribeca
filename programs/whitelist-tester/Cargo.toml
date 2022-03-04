@@ -1,6 +1,6 @@
 [package]
 name = "whitelist-tester"
-version = "0.5.3"
+version = "0.5.4"
 description = "Example of using the locked-voter whitelist."
 edition = "2021"
 homepage = "https://tribeca.so"
