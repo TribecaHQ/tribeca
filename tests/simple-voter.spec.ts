@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { GokiSDK } from "@gokiprotocol/client";
 import { BN } from "@project-serum/anchor";

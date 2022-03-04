@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { findTransactionAddress, GokiSDK } from "@gokiprotocol/client";
 import { expectTX } from "@saberhq/chai-solana";
