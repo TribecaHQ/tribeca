@@ -144,7 +144,7 @@ impl<'info> Lock<'info> {
         }
         if well_known::is_well_known(&program_id) {
             msg!(
-                "{} is part of the core Tribeca protocol. Whitelist will not be checked.",
+                "{} is part of the core Tribeca protocol. Bypassing whitelist.",
                 program_id
             );
             return Ok(());
