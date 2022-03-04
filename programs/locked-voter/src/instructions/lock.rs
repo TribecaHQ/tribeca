@@ -142,6 +142,13 @@ impl<'info> Lock<'info> {
         if program_id == crate::ID {
             return Ok(());
         }
+        if well_known::is_well_known(&program_id) {
+            msg!(
+                "{} is part of the core Tribeca protocol. Whitelist will not be checked.",
+                program_id
+            );
+            return Ok(());
+        }
 
         let whitelist_entry_account_info = next_account_info(accounts_iter)?;
         invariant!(

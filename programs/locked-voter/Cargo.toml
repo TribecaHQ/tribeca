@@ -25,6 +25,7 @@ anchor-spl = ">=0.22"
 govern = { path = "../govern", features = ["cpi"], version = "^0.5" }
 num-traits = "0.2"
 vipers = "^2.0"
+well-known = { path = "./well-known", version = "^0.1" }
 
 [dev-dependencies]
 proptest = { version = "1.0" }

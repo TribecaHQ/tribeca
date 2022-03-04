@@ -1,0 +1,14 @@
+[package]
+name = "well-known"
+version = "0.1.0"
+description = "Known program IDs related to Tribeca."
+edition = "2021"
+homepage = "https://tribeca.so"
+repository = "https://github.com/TribecaHQ/tribeca"
+authors = ["Tribeca Team <team@tribeca.so>"]
+license = "AGPL-3.0"
+keywords = ["solana", "governance", "tribeca"]
+
+[dependencies]
+solana-program = "^1.8"
+static-pubkey = "^1.0.2"

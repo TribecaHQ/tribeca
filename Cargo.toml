@@ -1,5 +1,5 @@
 [workspace]
-members = ["programs/*"]
+members = ["programs/*", "programs/locked-voter/well-known"]
 
 [profile.release]
 lto = "fat"
