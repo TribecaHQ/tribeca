@@ -2,7 +2,7 @@
 pkgs.buildEnv {
   name = "ci";
   paths = with pkgs;
-    (pkgs.lib.optionals pkgs.stdenv.isLinux ([ libudev ])) ++ [
+    (pkgs.lib.optionals pkgs.stdenv.isLinux ([ udev ])) ++ [
       anchor-0_22_0
       cargo-workspaces
       solana-basic
