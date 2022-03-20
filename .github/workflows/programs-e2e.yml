@@ -92,7 +92,7 @@ jobs:
       - name: Install Solana
         if: steps.solana-cache.outputs.cache-hit != 'true'
         run: |
-          nix shell .#solana-install --command solana-basic init ${{ env.SOLANA_VERSION }}
+          nix shell .#solana-basic --command solana-install init ${{ env.SOLANA_VERSION }}
       - name: Setup Solana Path
         run: |
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
