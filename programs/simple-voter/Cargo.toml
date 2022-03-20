@@ -23,5 +23,5 @@ default = []
 anchor-lang = ">=0.22"
 anchor-spl = ">=0.22"
 govern = { path = "../govern", features = ["cpi"], version = "^0.5" }
-smart-wallet = { version = "^0.8", features = ["cpi"] }
+smart-wallet = { version = "^0.9", features = ["cpi"] }
 vipers = "^2.0"
