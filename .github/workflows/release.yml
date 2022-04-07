@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: cachix/install-nix-action@v16
+      - uses: cachix/install-nix-action@v17
       - name: Setup Cachix
         uses: cachix/cachix-action@v10
         with:
@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: cachix/install-nix-action@v16
+      - uses: cachix/install-nix-action@v17
       - name: Setup Cachix
         uses: cachix/cachix-action@v10
         with:
@@ -81,7 +81,7 @@ jobs:
     name: Release verifiable binaries
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v16
+      - uses: cachix/install-nix-action@v17
       - name: Setup Cachix
         uses: cachix/cachix-action@v10
         with:
@@ -105,7 +105,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: cachix/install-nix-action@v16
+      - uses: cachix/install-nix-action@v17
       - name: Setup Cachix
         uses: cachix/cachix-action@v10
         with:
