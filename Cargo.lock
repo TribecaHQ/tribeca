@@ -593,7 +593,7 @@ dependencies = [
 
 [[package]]
 name = "govern"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -768,7 +768,7 @@ dependencies = [
 
 [[package]]
 name = "locked-voter"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -1195,7 +1195,7 @@ dependencies = [
 
 [[package]]
 name = "simple-voter"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -1533,7 +1533,7 @@ dependencies = [
 
 [[package]]
 name = "whitelist-tester"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
