@@ -1,6 +1,6 @@
 import type { GokiSDK } from "@gokiprotocol/client";
 import type { SmartWalletWrapper } from "@gokiprotocol/client/dist/cjs/wrappers/smartWallet";
-import type { Idl } from "@project-serum/anchor";
+import { AnchorProvider } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { chaiSolana, expectTX } from "@saberhq/chai-solana";
 import type { Provider } from "@saberhq/solana-contrib";
@@ -21,7 +21,7 @@ import {
   LAMPORTS_PER_SOL,
   TransactionInstruction,
 } from "@solana/web3.js";
-import chai, { assert } from "chai";
+import chai from "chai";
 
 import type { TribecaPrograms } from "../../src";
 import { TribecaSDK } from "../../src";
@@ -49,25 +49,17 @@ export const DUMMY_INSTRUCTIONS = [
 export type Workspace = TribecaPrograms;
 
 export const makeSDK = (): TribecaSDK => {
-  const anchorProvider = anchor.Provider.env();
+  const anchorProvider = AnchorProvider.env();
   anchor.setProvider(anchorProvider);
 
-  const provider = SolanaProvider.load({
+  const provider = SolanaProvider.init({
     connection: anchorProvider.connection,
-    sendConnection: anchorProvider.connection,
     wallet: anchorProvider.wallet,
     opts: anchorProvider.opts,
   });
   return TribecaSDK.load({
     provider,
   });
-};
-
-type IDLError = NonNullable<Idl["errors"]>[number];
-
-export const assertError = (error: IDLError, other: IDLError): void => {
-  assert.strictEqual(error.code, other.code);
-  assert.strictEqual(error.msg, other.msg);
 };
 
 export const setupGovernor = async ({

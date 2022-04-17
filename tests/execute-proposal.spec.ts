@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { findTransactionAddress, GokiSDK } from "@gokiprotocol/client";
 import { expectTX } from "@saberhq/chai-solana";
@@ -110,7 +109,7 @@ describe("Execute proposal", () => {
     });
     tx1.addSigners(user1);
     await expectTX(tx1, "deposit tokens and cast votes").to.be.fulfilled;
-    await sleep(2500);
+    await sleep(2_500);
     const tx3 = await governorW.queueProposal({
       index: proposalIndex,
     });

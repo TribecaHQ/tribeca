@@ -42,7 +42,7 @@ impl LockerParams {
 }
 
 #[cfg(test)]
-#[allow(clippy::integer_arithmetic)]
+#[allow(clippy::integer_arithmetic, clippy::unwrap_used)]
 mod tests {
     use super::*;
     use proptest::prelude::*;

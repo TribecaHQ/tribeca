@@ -1,5 +1,8 @@
 use crate::*;
-use anchor_lang::solana_program::{system_program, sysvar::instructions::get_instruction_relative};
+use anchor_lang::solana_program::{
+    system_program,
+    sysvar::{self, instructions::get_instruction_relative},
+};
 use anchor_spl::token;
 use num_traits::ToPrimitive;
 
@@ -11,11 +14,14 @@ pub struct Lock<'info> {
     pub locker: Account<'info, Locker>,
 
     /// [Escrow].
-    #[account(mut)]
+    #[account(mut, has_one = locker)]
     pub escrow: Account<'info, Escrow>,
 
     /// Token account held by the [Escrow].
-    #[account(mut)]
+    #[account(
+        mut,
+        constraint = escrow.tokens == escrow_tokens.key()
+    )]
     pub escrow_tokens: Account<'info, TokenAccount>,
 
     /// Authority of the [Escrow] and [Self::source_tokens].
@@ -27,45 +33,6 @@ pub struct Lock<'info> {
 
     /// Token program.
     pub token_program: Program<'info, Token>,
-}
-
-/// Accounts for [locked_voter::set_locker_params].
-#[derive(Accounts)]
-pub struct SetLockerParams<'info> {
-    /// The [Locker].
-    #[account(mut)]
-    pub locker: Account<'info, Locker>,
-    /// The [Governor].
-    pub governor: Account<'info, Governor>,
-    /// The smart wallet on the [Governor].
-    pub smart_wallet: Signer<'info>,
-}
-
-impl<'info> SetLockerParams<'info> {
-    pub fn set_locker_params(&mut self, params: LockerParams) -> Result<()> {
-        let prev_params = self.locker.params;
-        self.locker.params = params;
-
-        emit!(LockerSetParamsEvent {
-            locker: self.locker.key(),
-            prev_params,
-            params,
-        });
-
-        Ok(())
-    }
-}
-
-impl<'info> Validate<'info> for SetLockerParams<'info> {
-    fn validate(&self) -> Result<()> {
-        assert_keys_eq!(self.governor, self.locker.governor, "governor mismatch");
-        assert_keys_eq!(
-            self.smart_wallet,
-            self.governor.smart_wallet,
-            "smart wallet mismatch"
-        );
-        Ok(())
-    }
 }
 
 impl<'info> Lock<'info> {
@@ -138,6 +105,7 @@ impl<'info> Lock<'info> {
         invariant!(ra.len() == 2, MustProvideWhitelist);
         let accounts_iter = &mut ra.iter();
         let ix_sysvar_account_info = next_account_info(accounts_iter)?;
+        assert_keys_eq!(ix_sysvar_account_info.key(), sysvar::instructions::ID);
         let program_id = get_instruction_relative(0, ix_sysvar_account_info)?.program_id;
         if program_id == crate::ID {
             return Ok(());
@@ -171,6 +139,9 @@ impl<'info> Validate<'info> for Lock<'info> {
         assert_keys_eq!(self.escrow.owner, self.escrow_owner);
         assert_keys_eq!(self.escrow_owner, self.source_tokens.owner);
 
+        assert_keys_eq!(self.source_tokens.mint, self.locker.token_mint);
+        assert_keys_neq!(self.escrow_tokens, self.source_tokens);
+
         Ok(())
     }
 }
@@ -198,16 +169,4 @@ pub struct LockEvent {
     pub next_escrow_ends_at: i64,
     /// The new [Escrow] start time.
     pub next_escrow_started_at: i64,
-}
-
-/// Event called in [locked_voter::set_locker_params].
-#[event]
-pub struct LockerSetParamsEvent {
-    /// The [Locker].
-    #[index]
-    pub locker: Pubkey,
-    /// Previous [LockerParams].
-    pub prev_params: LockerParams,
-    /// New [LockerParams].
-    pub params: LockerParams,
 }

@@ -53,6 +53,10 @@ export const TRIBECA_CODERS = buildCoderMap<{
 export const DEFAULT_DECIMALS = 6;
 
 export const ONE_DAY = new BN(24 * 60 * 60);
+
+/**
+ * Number of seconds in one year.
+ */
 export const ONE_YEAR = new BN(365).mul(ONE_DAY);
 
 // Default number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed

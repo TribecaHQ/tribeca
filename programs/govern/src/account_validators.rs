@@ -70,16 +70,8 @@ impl<'info> Validate<'info> for CancelProposal<'info> {
 
 impl<'info> Validate<'info> for QueueProposal<'info> {
     fn validate(&self) -> Result<()> {
-        assert_keys_eq!(
-            self.governor,
-            self.proposal.governor,
-            "proposal should be under the governor"
-        );
-        assert_keys_eq!(
-            self.smart_wallet,
-            self.governor.smart_wallet,
-            "smart wallet should match"
-        );
+        assert_keys_eq!(self.governor, self.proposal.governor);
+        assert_keys_eq!(self.smart_wallet, self.governor.smart_wallet);
         let now = Clock::get()?.unix_timestamp;
         let proposal_state = unwrap_opt!(self.proposal.state(now), "invalid state");
         if proposal_state != ProposalState::Succeeded {

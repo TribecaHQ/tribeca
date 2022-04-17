@@ -16,39 +16,44 @@ on:
       - Cargo.toml
       - Cargo.lock
 
+defaults:
+  run:
+    shell: nix shell .#rust --command bash {0}
+
 env:
   CARGO_TERM_COLOR: always
-  RUST_TOOLCHAIN: 1.59.0
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust nightly
-        uses: actions-rs/toolchain@v1
+      - uses: cachix/install-nix-action@v17
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v10
         with:
-          override: true
-          profile: minimal
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-          components: rustfmt, clippy
+          name: tribeca
+          extraPullNames: quarry, saber
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - uses: Swatinem/rust-cache@v1
       - name: Run fmt
         run: cargo fmt -- --check
       - name: Run clippy
         run: cargo clippy --all-targets -- --deny=warnings
+      - name: Check if publish works
+        run: cargo publish --no-verify --dry-run
 
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust nightly
-        uses: actions-rs/toolchain@v1
+      - uses: cachix/install-nix-action@v17
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v10
         with:
-          override: true
-          profile: minimal
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-          components: rustfmt, clippy
+          name: tribeca
+          extraPullNames: quarry, saber
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - uses: Swatinem/rust-cache@v1
       - name: Run unit tests
         run: cargo test --lib
@@ -57,13 +62,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust nightly
-        uses: actions-rs/toolchain@v1
+      - uses: cachix/install-nix-action@v17
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v10
         with:
-          override: true
-          profile: minimal
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-          components: rustfmt, clippy
+          name: tribeca
+          extraPullNames: quarry, saber
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - uses: Swatinem/rust-cache@v1
       - name: Generate docs
         run: cargo doc

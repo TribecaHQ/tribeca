@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use vipers::unwrap_int;
 
 use crate::{electorate_seeds, VoterContext};
 
@@ -12,7 +13,7 @@ pub fn process_cast_votes(ctx: Context<VoterContext>, vote_side: u8) -> Result<(
     govern::cpi::set_vote(cpi_ctx, vote_side, ctx.accounts.token_record.balance)?;
 
     let token_record = &mut ctx.accounts.token_record;
-    token_record.unfinalized_votes += 1;
+    token_record.unfinalized_votes = unwrap_int!(token_record.unfinalized_votes.checked_add(1));
 
     Ok(())
 }
@@ -27,7 +28,7 @@ pub fn process_withdraw_votes(ctx: Context<VoterContext>) -> Result<()> {
     govern::cpi::set_vote(cpi_ctx, ctx.accounts.vote.side, 0)?;
 
     let token_record = &mut ctx.accounts.token_record;
-    token_record.unfinalized_votes -= 1;
+    token_record.unfinalized_votes = unwrap_int!(token_record.unfinalized_votes.checked_sub(1));
 
     Ok(())
 }

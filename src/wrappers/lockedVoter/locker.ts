@@ -147,7 +147,7 @@ export class LockerWrapper {
     return new TransactionEnvelope(this.sdk.provider, [ix]);
   }
 
-  async lockTokens({
+  async lockTokensV1({
     amount,
     duration,
     authority = this.sdk.provider.wallet.publicKey,
@@ -168,6 +168,7 @@ export class LockerWrapper {
     }
 
     const lockerData = await this.reload();
+
     instructions.push(
       this.program.instruction.lock(amount, duration, {
         accounts: {
@@ -194,6 +195,57 @@ export class LockerWrapper {
           : [],
       })
     );
+
+    return new TransactionEnvelope(this.sdk.provider, instructions);
+  }
+
+  async lockTokens({
+    amount,
+    duration,
+    authority = this.sdk.provider.wallet.publicKey,
+  }: {
+    amount: BN;
+    duration: BN;
+    authority?: PublicKey;
+  }): Promise<TransactionEnvelope> {
+    invariant(this.locker, "locker not set");
+
+    const { escrow, instruction: initEscrowIx } = await this.getOrCreateEscrow(
+      authority
+    );
+    const { govTokenAccount, govTokenVault, instructions } =
+      await this._getOrCreateGovTokenATAsInternal(authority, escrow);
+    if (initEscrowIx) {
+      instructions.push(initEscrowIx);
+    }
+
+    const lockerData = await this.reload();
+
+    const lockAccounts = {
+      locker: this.locker,
+      escrow: escrow,
+      escrowOwner: authority,
+      escrowTokens: govTokenVault,
+      sourceTokens: govTokenAccount,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+
+    if (lockerData.params.whitelistEnabled) {
+      instructions.push(
+        this.program.instruction.lockWithWhitelist(amount, duration, {
+          accounts: {
+            lock: lockAccounts,
+            instructionsSysvar: SYSVAR_INSTRUCTIONS_PUBKEY,
+          },
+        })
+      );
+    } else {
+      instructions.push(
+        this.program.instruction.lockPermissionless(amount, duration, {
+          accounts: lockAccounts,
+        })
+      );
+    }
 
     return new TransactionEnvelope(this.sdk.provider, instructions);
   }
@@ -315,6 +367,30 @@ export class LockerWrapper {
         whitelistedOwner: owner ?? SystemProgram.programId,
         payer: this.sdk.provider.wallet.publicKey,
         systemProgram: SystemProgram.programId,
+      },
+    });
+  }
+
+  async createRevokeProgramLockPrivilegeIx(
+    programId: PublicKey,
+    owner: PublicKey | null
+  ): Promise<TransactionInstruction> {
+    const [whitelistEntry] = await findWhitelistAddress(
+      this.locker,
+      programId,
+      owner
+    );
+    const lockerData = await this.reload();
+    const governorData = await this.sdk.programs.Govern.account.governor.fetch(
+      lockerData.governor
+    );
+    return this.program.instruction.revokeProgramLockPrivilege({
+      accounts: {
+        locker: this.locker,
+        whitelistEntry,
+        governor: lockerData.governor,
+        smartWallet: governorData.smartWallet,
+        payer: this.sdk.provider.wallet.publicKey,
       },
     });
   }

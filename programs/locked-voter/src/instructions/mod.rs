@@ -1,19 +1,29 @@
 //! Instruction processors.
 
 pub mod activate_proposal;
+pub mod approve_program_lock_privilege;
 pub mod cast_vote;
 pub mod exit;
 pub mod lock;
+pub mod lock_permissionless;
+pub mod lock_with_whitelist;
+pub mod lock_with_whitelist_entry;
 pub mod new_escrow;
 pub mod new_locker;
+pub mod revoke_program_lock_privilege;
+pub mod set_locker_params;
 pub mod set_vote_delegate;
-pub mod whitelist;
 
 pub use activate_proposal::*;
+pub use approve_program_lock_privilege::*;
 pub use cast_vote::*;
 pub use exit::*;
 pub use lock::*;
+pub use lock_permissionless::*;
+pub use lock_with_whitelist::*;
+pub use lock_with_whitelist_entry::*;
 pub use new_escrow::*;
 pub use new_locker::*;
+pub use revoke_program_lock_privilege::*;
+pub use set_locker_params::*;
 pub use set_vote_delegate::*;
-pub use whitelist::*;

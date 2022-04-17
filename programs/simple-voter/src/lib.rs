@@ -1,4 +1,7 @@
 //! A simple Tribeca voter program where 1 token = 1 vote.
+//!
+//! WARNING: this program is incomplete. Do not use this in production directly.
+//! Do not use this as a reference. Do not collect $200.
 
 use anchor_lang::prelude::*;
 use anchor_spl::token::*;
@@ -26,7 +29,7 @@ pub mod simple_voter {
         proposal_threshold: u64,
     ) -> Result<()> {
         let electorate = &mut ctx.accounts.electorate;
-        electorate.bump = *unwrap_int!(ctx.bumps.get("electorate"));
+        electorate.bump = unwrap_bump!(ctx, "electorate");
         electorate.proposal_threshold = proposal_threshold;
         electorate.base = ctx.accounts.base.key();
         electorate.governor = ctx.accounts.governor.key();
@@ -38,7 +41,7 @@ pub mod simple_voter {
     #[access_control(ctx.accounts.validate())]
     pub fn initialize_token_record(ctx: Context<InitializeTokenRecord>, _bump: u8) -> Result<()> {
         let token_record = &mut ctx.accounts.token_record;
-        token_record.bump = *unwrap_int!(ctx.bumps.get("token_record"));
+        token_record.bump = unwrap_bump!(ctx, "token_record");
         token_record.balance = ctx.accounts.gov_token_vault.amount;
         token_record.authority = ctx.accounts.authority.key();
         token_record.electorate = ctx.accounts.electorate.key();
@@ -93,7 +96,7 @@ pub mod simple_voter {
     pub fn finalize_votes(ctx: Context<FinalizeVote>) -> Result<()> {
         invariant!(ctx.accounts.proposal.get_state()? != ProposalState::Active);
         let token_record = &mut ctx.accounts.token_record;
-        token_record.unfinalized_votes -= 1;
+        token_record.unfinalized_votes = unwrap_int!(token_record.unfinalized_votes.checked_sub(1));
 
         Ok(())
     }
@@ -106,9 +109,13 @@ pub struct InitializeElectorate<'info> {
     /// The electorate.
     #[account(
         init,
-        seeds = [b"SimpleElectorate".as_ref(), base.key().to_bytes().as_ref()],
+        seeds = [
+            b"SimpleElectorate".as_ref(),
+            base.key().to_bytes().as_ref()
+        ],
         bump,
         payer = payer,
+        space = 8 + Electorate::LEN
     )]
     pub electorate: Account<'info, Electorate>,
     /// TODO(michael): Docs
@@ -135,6 +142,7 @@ pub struct InitializeTokenRecord<'info> {
         ],
         bump,
         payer = payer,
+        space = 8 + TokenRecord::LEN
     )]
     pub token_record: Account<'info, state::TokenRecord>,
     #[account(mut)]
@@ -174,9 +182,10 @@ pub struct TribecaContext<'info> {
 
 #[derive(Accounts)]
 pub struct ActivateProposal<'info> {
+    #[account(has_one = governor)]
     pub electorate: Account<'info, state::Electorate>,
     pub governor: Account<'info, Governor>,
-    #[account(mut)]
+    #[account(mut, has_one = governor)]
     pub proposal: Account<'info, Proposal>,
     /// The [govern] program.
     pub govern_program: Program<'info, govern::program::Govern>,

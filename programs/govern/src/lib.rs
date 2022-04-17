@@ -5,10 +5,7 @@
 use anchor_lang::prelude::*;
 use num_traits::cast::ToPrimitive;
 use smart_wallet::SmartWallet;
-use std::convert::TryInto;
-use vipers::invariant;
-use vipers::unwrap_int;
-use vipers::Validate;
+use vipers::prelude::*;
 
 mod account_structs;
 mod account_validators;
@@ -45,7 +42,7 @@ pub mod govern {
 
         let governor = &mut ctx.accounts.governor;
         governor.base = ctx.accounts.base.key();
-        governor.bump = *unwrap_int!(ctx.bumps.get("governor"));
+        governor.bump = unwrap_bump!(ctx, "governor");
 
         governor.proposal_count = 0;
         governor.electorate = electorate;
@@ -77,7 +74,7 @@ pub mod govern {
         let proposal = &mut ctx.accounts.proposal;
         proposal.governor = governor.key();
         proposal.index = governor.proposal_count;
-        proposal.bump = *unwrap_int!(ctx.bumps.get("proposal"));
+        proposal.bump = unwrap_bump!(ctx, "proposal");
 
         proposal.proposer = ctx.accounts.proposer.key();
 
@@ -164,7 +161,7 @@ pub mod govern {
         let vote = &mut ctx.accounts.vote;
         vote.proposal = ctx.accounts.proposal.key();
         vote.voter = voter;
-        vote.bump = *unwrap_int!(ctx.bumps.get("vote"));
+        vote.bump = unwrap_bump!(ctx, "vote");
 
         vote.side = VoteSide::Pending.into();
         vote.weight = 0;

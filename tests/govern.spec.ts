@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { GokiSDK } from "@gokiprotocol/client";
 import { expectTX } from "@saberhq/chai-solana";
 import type { SendTransactionError } from "@solana/web3.js";

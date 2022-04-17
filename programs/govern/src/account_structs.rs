@@ -16,6 +16,7 @@ pub struct CreateGovernor<'info> {
         ],
         bump,
         payer = payer,
+        space = 8 + Governor::LEN
     )]
     pub governor: Account<'info, Governor>,
     /// The Smart Wallet.
@@ -29,7 +30,7 @@ pub struct CreateGovernor<'info> {
 
 /// Accounts for [govern::create_proposal].
 #[derive(Accounts)]
-#[instruction(bump: u8, instructions: Vec<ProposalInstruction>)]
+#[instruction(_bump: u8, instructions: Vec<ProposalInstruction>)]
 pub struct CreateProposal<'info> {
     /// The [Governor].
     #[account(mut)]
@@ -84,17 +85,20 @@ pub struct CancelProposal<'info> {
 #[derive(Accounts)]
 pub struct QueueProposal<'info> {
     /// The Governor.
+    #[account(has_one = smart_wallet)]
     pub governor: Account<'info, Governor>,
     /// The Proposal to queue.
     #[account(mut)]
     pub proposal: Account<'info, Proposal>,
-    /// CHECK: The transaction key of the proposal.
-    #[account(mut)]
-    pub transaction: UncheckedAccount<'info>,
+    /// The transaction key of the proposal.
+    /// This account is passed to and validated by the Goki Smart Wallet program to be initialized.
+    #[account(mut, constraint = transaction.to_account_info().data_is_empty())]
+    pub transaction: SystemAccount<'info>,
     /// The Smart Wallet.
     #[account(mut)]
     pub smart_wallet: Account<'info, SmartWallet>,
     /// Payer of the queued transaction.
+    #[account(mut)]
     pub payer: Signer<'info>,
     /// The Smart Wallet program.
     pub smart_wallet_program: Program<'info, smart_wallet::program::SmartWallet>,
@@ -104,7 +108,7 @@ pub struct QueueProposal<'info> {
 
 /// Accounts for [govern::new_vote].
 #[derive(Accounts)]
-#[instruction(bump: u8, voter: Pubkey)]
+#[instruction(_bump: u8, voter: Pubkey)]
 pub struct NewVote<'info> {
     /// Proposal being voted on.
     pub proposal: Account<'info, Proposal>,
@@ -118,7 +122,8 @@ pub struct NewVote<'info> {
             voter.as_ref()
         ],
         bump,
-        payer = payer
+        payer = payer,
+        space = 8 + Vote::LEN
     )]
     pub vote: Account<'info, Vote>,
 
@@ -147,7 +152,7 @@ pub struct SetVote<'info> {
 
 /// Accounts for [govern::create_proposal_meta].
 #[derive(Accounts)]
-#[instruction(bump: u8, title: String, description_link: String)]
+#[instruction(_bump: u8, title: String, description_link: String)]
 pub struct CreateProposalMeta<'info> {
     /// The [Proposal].
     pub proposal: Box<Account<'info, Proposal>>,
@@ -162,7 +167,7 @@ pub struct CreateProposalMeta<'info> {
         ],
         bump,
         payer = payer,
-        space = 4 + std::mem::size_of::<ProposalMeta>()
+        space = 8 + std::mem::size_of::<ProposalMeta>()
             + 4 + title.as_bytes().len()
             + 4 + description_link.as_bytes().len()
     )]

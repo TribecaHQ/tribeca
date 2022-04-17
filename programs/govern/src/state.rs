@@ -1,6 +1,6 @@
 //! Struct definitions for accounts that hold state.
 
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::pubkey::PUBKEY_BYTES};
 
 /// A Governor is the "DAO": it is the account that holds control over important protocol functions,
 /// including treasury, protocol parameters, and more.
@@ -27,6 +27,11 @@ pub struct Governor {
     pub params: GovernanceParameters,
 }
 
+impl Governor {
+    /// Number of bytes in a [Governor].
+    pub const LEN: usize = PUBKEY_BYTES + 1 + 8 + PUBKEY_BYTES * 2 + GovernanceParameters::LEN;
+}
+
 /// Governance parameters.
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct GovernanceParameters {
@@ -38,6 +43,11 @@ pub struct GovernanceParameters {
     pub quorum_votes: u64,
     /// The timelock delay of the DAO's created proposals.
     pub timelock_delay_seconds: i64,
+}
+
+impl GovernanceParameters {
+    /// Number of bytes in a [GovernanceParameters].
+    pub const LEN: usize = 8 * 4;
 }
 
 /// A Proposal is a pending transaction that may or may not be executed by the DAO.
@@ -121,6 +131,11 @@ pub struct Vote {
     pub side: u8,
     /// The number of votes this vote holds.
     pub weight: u64,
+}
+
+impl Vote {
+    /// Number of bytes in a [Vote].
+    pub const LEN: usize = PUBKEY_BYTES * 2 + 1 + 1 + 8;
 }
 
 /// Instruction.

@@ -1,6 +1,8 @@
 //! State accounts.
 #![deny(missing_docs)]
 
+use anchor_lang::solana_program::pubkey::PUBKEY_BYTES;
+
 use crate::*;
 
 /// A group of [Escrow]s.
@@ -21,6 +23,11 @@ pub struct Locker {
     pub params: LockerParams,
 }
 
+impl Locker {
+    /// Number of bytes in a [Locker].
+    pub const LEN: usize = PUBKEY_BYTES + 1 + PUBKEY_BYTES + 8 + PUBKEY_BYTES + LockerParams::LEN;
+}
+
 /// Contains parameters for the [Locker].
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct LockerParams {
@@ -35,6 +42,11 @@ pub struct LockerParams {
     pub max_stake_duration: u64,
     /// Minimum number of votes required to activate a proposal.
     pub proposal_activation_min_votes: u64,
+}
+
+impl LockerParams {
+    /// Number of bytes in a [LockerParams].
+    pub const LEN: usize = 1 + 1 + 8 + 8 + 8;
 }
 
 /// An entry in the [Locker]'s whitelist.
@@ -53,6 +65,11 @@ pub struct LockerWhitelistEntry {
     /// If set to [anchor_lang::solana_program::system_program::ID],
     /// all accounts are allowed to be the [Escrow::owner].
     pub owner: Pubkey,
+}
+
+impl LockerWhitelistEntry {
+    /// Number of bytes in a [LockerWhitelistEntry].
+    pub const LEN: usize = 1 + PUBKEY_BYTES * 3;
 }
 
 /// Locks tokens on behalf of a user.
@@ -78,6 +95,11 @@ pub struct Escrow {
     /// Account that is authorized to vote on behalf of this [Escrow].
     /// Defaults to the [Escrow::owner].
     pub vote_delegate: Pubkey,
+}
+
+impl Escrow {
+    /// Number of bytes in an [Escrow].
+    pub const LEN: usize = PUBKEY_BYTES * 2 + 1 + PUBKEY_BYTES + 8 + 8 + 8 + PUBKEY_BYTES;
 }
 
 impl Escrow {
@@ -113,6 +135,7 @@ impl Escrow {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
 

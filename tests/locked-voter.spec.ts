@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { GokiSDK } from "@gokiprotocol/client";
 import { newProgram } from "@saberhq/anchor-contrib";
@@ -63,7 +62,9 @@ const expectLockedSupply = async (
   expectedSupply: BN
 ): Promise<void> => {
   const lockerData = await locker.reload();
-  expect(lockerData.lockedSupply).to.bignumber.eq(expectedSupply);
+  expect(lockerData.lockedSupply, "locked supply").to.bignumber.eq(
+    expectedSupply
+  );
 };
 
 describe("Locked Voter", () => {
@@ -214,10 +215,23 @@ describe("Locked Voter", () => {
     }
   });
 
+  it("lock tokens v1 as user", async () => {
+    const userV1 = await createUser(sdk.provider, govTokenMint);
+    const lockTx = await lockerW.lockTokensV1({
+      amount: INITIAL_MINT_AMOUNT,
+      duration: DEFAULT_LOCKER_PARAMS.maxStakeDuration,
+      authority: userV1.publicKey,
+    });
+    lockTx.addSigners(userV1);
+    await expectTX(lockTx, "lock tokens").to.be.fulfilled;
+  });
+
   describe("Escrow", () => {
     let user: Signer;
+    let initialLockedSupply: BN;
 
     beforeEach("Create user and deposit tokens", async () => {
+      initialLockedSupply = (await lockerW.reload()).lockedSupply;
       user = await createUser(sdk.provider, govTokenMint);
       const lockTx = await lockerW.lockTokens({
         amount: INITIAL_MINT_AMOUNT,
@@ -230,7 +244,7 @@ describe("Locked Voter", () => {
 
     it("Escrow was initialized and locker was updated", async () => {
       const { locker } = lockerW;
-      const lockerData = await lockerW.data();
+      const lockerData = await lockerW.reload();
 
       const [escrowKey, bump] = await findEscrowAddress(locker, user.publicKey);
       const escrowATA = await getATAAddress({
@@ -239,7 +253,7 @@ describe("Locked Voter", () => {
       });
       const escrow = await lockerW.fetchEscrow(escrowKey);
       expect(escrow.bump).equal(bump);
-      expect(escrow.amount.toString()).equal(INITIAL_MINT_AMOUNT.toString());
+      expect(escrow.amount).to.bignumber.equal(INITIAL_MINT_AMOUNT);
       expect(escrow.owner).eqAddress(user.publicKey);
       expect(escrow.locker).eqAddress(locker);
       expect(escrow.tokens).eqAddress(escrowATA);
@@ -247,10 +261,15 @@ describe("Locked Voter", () => {
       expect(escrow.escrowEndsAt.sub(escrow.escrowStartedAt).toString()).equal(
         DEFAULT_LOCKER_PARAMS.maxStakeDuration.toString()
       );
-      await expectLockedSupply(lockerW, INITIAL_MINT_AMOUNT);
+      await expectLockedSupply(
+        lockerW,
+        INITIAL_MINT_AMOUNT.add(initialLockedSupply)
+      );
 
       const tokenAccount = await getTokenAccount(sdk.provider, escrowATA);
-      expect(tokenAccount.amount).to.bignumber.eq(INITIAL_MINT_AMOUNT);
+      expect(tokenAccount.amount, "escrow account").to.bignumber.eq(
+        INITIAL_MINT_AMOUNT
+      );
     });
 
     it("Set vote delegate", async () => {
@@ -603,6 +622,161 @@ describe("Locked Voter", () => {
       const tx = await buildCPITX(owner);
 
       await assertTXThrows(tx, LockedVoterErrors.ProgramNotWhitelisted);
+    });
+
+    it("CPI succeeds after program owner has been whitelisted", async () => {
+      const owner = Keypair.generate();
+      await executeTransactionBySmartWallet({
+        provider: sdk.provider,
+        smartWalletWrapper: smartWalletW,
+        instructions: [
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            owner.publicKey
+          ),
+        ],
+      });
+      const tx = await buildCPITX(owner);
+      await expectTX(tx, "successfully locked tokens via the whitelist tester")
+        .to.be.fulfilled;
+    });
+
+    it("Non CPI lock invocation should succeed", async () => {
+      const { provider } = sdk;
+      const user = await createUser(provider, govTokenMint);
+      const tx = await lockerW.lockTokens({
+        amount: INITIAL_MINT_AMOUNT,
+        duration: ONE_DAY,
+        authority: user.publicKey,
+      });
+      tx.addSigners(user);
+      await expectTX(tx, "lock tokens").to.be.fulfilled;
+    });
+
+    it("Remove whitelist", async () => {
+      await executeTransactionBySmartWallet({
+        provider: sdk.provider,
+        smartWalletWrapper: smartWalletW,
+        instructions: [
+          await lockerW.createRevokeProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            null
+          ),
+        ],
+      });
+    });
+  });
+
+  describe("CPI Whitelist (v2)", () => {
+    const TEST_PROGRAM_ID = new PublicKey(
+      "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+    );
+    const testProgram = newProgram<WhitelistTesterProgram>(
+      WhitelistTesterJSON,
+      TEST_PROGRAM_ID,
+      sdk.provider
+    );
+
+    const buildCPITX = async (owner?: Signer): Promise<TransactionEnvelope> => {
+      const { provider } = sdk;
+      const user = await createUser(provider, govTokenMint, owner);
+      const authority = user.publicKey;
+      const { escrow, instruction: initEscrowIx } =
+        await lockerW.getOrCreateEscrow(authority);
+
+      const { address: sourceTokens, instruction: ataIx1 } =
+        await getOrCreateATA({
+          provider,
+          mint: govTokenMint,
+          owner: authority,
+          payer: authority,
+        });
+      const { address: escrowTokens, instruction: ataIx2 } =
+        await getOrCreateATA({
+          provider,
+          mint: govTokenMint,
+          owner: escrow,
+          payer: authority,
+        });
+      const instructions = [initEscrowIx, ataIx1, ataIx2].filter(
+        (ix): ix is TransactionInstruction => !!ix
+      );
+
+      const [whitelistEntry] = await findWhitelistAddress(
+        lockerW.locker,
+        TEST_PROGRAM_ID,
+        owner ? owner.publicKey : null
+      );
+
+      instructions.push(
+        testProgram.instruction.lockTokensWithWhitelistEntry(
+          INITIAL_MINT_AMOUNT,
+          ONE_YEAR,
+          {
+            accounts: {
+              locker: lockerW.locker,
+              escrow,
+              escrowOwner: authority,
+              escrowTokens,
+              sourceTokens,
+              lockedVoterProgram: TRIBECA_ADDRESSES.LockedVoter,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              instructionsSysvar: SYSVAR_INSTRUCTIONS_PUBKEY,
+              whitelistEntry,
+            },
+          }
+        )
+      );
+
+      return new TransactionEnvelope(sdk.provider, instructions, [user]);
+    };
+
+    it("CPI fails when program is not whitelisted", async () => {
+      const tx = await buildCPITX();
+      try {
+        await tx.confirm();
+      } catch (e) {
+        const error = e as Error;
+        expect(error.message).to.include(
+          `0xbc4` // account not initialized
+        );
+      }
+    });
+
+    it("CPI succeeds after program has been whitelisted", async () => {
+      await executeTransactionBySmartWallet({
+        provider: sdk.provider,
+        smartWalletWrapper: smartWalletW,
+        instructions: [
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            null
+          ),
+        ],
+      });
+      const tx = await buildCPITX();
+      await expectTX(tx, "successfully locked tokens via the whitelist tester")
+        .to.be.fulfilled;
+    });
+
+    it("CPI fails when program owner is not whitelisted", async () => {
+      const owner = Keypair.generate();
+      const faker = Keypair.generate();
+      await executeTransactionBySmartWallet({
+        provider: sdk.provider,
+        smartWalletWrapper: smartWalletW,
+        instructions: [
+          await lockerW.createApproveProgramLockPrivilegeIx(
+            TEST_PROGRAM_ID,
+            faker.publicKey
+          ),
+        ],
+      });
+      const tx = await buildCPITX(owner);
+
+      await expectTX(tx).to.be.rejectedWith(
+        new RegExp(`custom program error: 0xbc4`)
+      );
     });
 
     it("CPI succeeds after program owner has been whitelisted", async () => {

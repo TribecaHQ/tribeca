@@ -9,13 +9,13 @@ pub struct Exit<'info> {
     pub locker: Account<'info, Locker>,
 
     /// The [Escrow] that is being closed.
-    #[account(mut, close = payer)]
+    #[account(mut, has_one = locker, close = payer)]
     pub escrow: Account<'info, Escrow>,
 
     /// Authority of the [Escrow].
     pub escrow_owner: Signer<'info>,
     /// Tokens locked up in the [Escrow].
-    #[account(mut)]
+    #[account(mut, constraint = escrow.tokens == escrow_tokens.key())]
     pub escrow_tokens: Account<'info, TokenAccount>,
     /// Destination for the tokens to unlock.
     #[account(mut)]
@@ -78,6 +78,8 @@ impl<'info> Validate<'info> for Exit<'info> {
             self.escrow.escrow_ends_at
         );
         invariant!(self.escrow.escrow_ends_at < now, EscrowNotEnded);
+
+        assert_keys_neq!(self.escrow_tokens, self.destination_tokens);
 
         Ok(())
     }

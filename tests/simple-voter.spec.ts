@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { SmartWalletWrapper } from "@gokiprotocol/client";
 import { GokiSDK } from "@gokiprotocol/client";
 import { BN } from "@project-serum/anchor";
@@ -357,7 +356,7 @@ describe("Simple Voter", () => {
       await expectTX(createObsoleteProposalTx, "creating an obsolete proposal")
         .to.be.fulfilled;
 
-      await sleep(1000);
+      await sleep(2_000);
       await expectTX(
         voterW.activateProposal(obsoleteProposal),
         "activate proposal"
