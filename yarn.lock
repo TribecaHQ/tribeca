@@ -561,6 +561,7 @@ __metadata:
     "@solana/web3.js": ^1.43.5
     "@types/bn.js": ^5.1.0
     "@types/chai": ^4.3.1
+    "@types/eslint": ^8.4.2
     "@types/lodash": ^4.14.182
     "@types/mocha": ^9.1.1
     "@types/node": ^16.11.38
@@ -689,6 +690,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/eslint@npm:^8.4.2":
+  version: 8.4.2
+  resolution: "@types/eslint@npm:8.4.2"
+  dependencies:
+    "@types/estree": "*"
+    "@types/json-schema": "*"
+  checksum: e81268cdeb8d64d84af649344df88f064ece0f05db62072657c976b6162ffe16f94b6480a5367d627c629272c2d86d0ee8c24f7095e98f8e743b16f98500673b
+  languageName: node
+  linkType: hard
+
+"@types/estree@npm:*":
+  version: 0.0.51
+  resolution: "@types/estree@npm:0.0.51"
+  checksum: e56a3bcf759fd9185e992e7fdb3c6a5f81e8ff120e871641607581fb3728d16c811702a7d40fa5f869b7f7b4437ab6a87eb8d98ffafeee51e85bbe955932a189
+  languageName: node
+  linkType: hard
+
 "@types/express-serve-static-core@npm:^4.17.9":
   version: 4.17.24
   resolution: "@types/express-serve-static-core@npm:4.17.24"
@@ -704,6 +722,13 @@ __metadata:
   version: 4.0.1
   resolution: "@types/http-cache-semantics@npm:4.0.1"
   checksum: 1048aacf627829f0d5f00184e16548205cd9f964bf0841c29b36bc504509230c40bc57c39778703a1c965a6f5b416ae2cbf4c1d4589c889d2838dd9dbfccf6e9
+  languageName: node
+  linkType: hard
+
+"@types/json-schema@npm:*":
+  version: 7.0.11
+  resolution: "@types/json-schema@npm:7.0.11"
+  checksum: 527bddfe62db9012fccd7627794bd4c71beb77601861055d87e3ee464f2217c85fca7a4b56ae677478367bbd248dbde13553312b7d4dbc702a2f2bbf60c4018d
   languageName: node
   linkType: hard
 
