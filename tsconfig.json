@@ -1,5 +1,5 @@
 {
-  "extends": "@saberhq/tsconfig/tsconfig.lib.json",
+  "extends": "@saberhq/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
     "types": ["mocha"],
     "noEmit": true
