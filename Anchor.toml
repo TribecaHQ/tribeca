@@ -1,6 +1,9 @@
 anchor_version = "0.24.2"
 solana_version = "1.9.12"
 
+[features]
+seeds = true
+
 [scripts]
 test = "yarn mocha -b"
 

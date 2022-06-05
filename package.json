@@ -55,7 +55,7 @@
     "@types/prettier": "^2.6.3",
     "@yarnpkg/doctor": "^4.0.0-rc.6",
     "bn.js": "^5.2.1",
-    "chai": "^4.3.4",
+    "chai": "=4.3.4",
     "eslint": "^8.17.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "^2.26.0",
@@ -75,11 +75,12 @@
     "@saberhq/anchor-contrib": "^1.12",
     "@saberhq/solana-contrib": "^1.12",
     "@saberhq/token-utils": "^1.12",
-    "@solana/web3.js": "^1.37",
+    "@solana/web3.js": "^1.43.5",
     "bn.js": "^5.2.0"
   },
   "resolutions": {
-    "@solana/web3.js": "^1.37",
+    "chai": "=4.3.4",
+    "@solana/web3.js": "^1.43.5",
     "bn.js": "^5.2.0",
     "@types/bn.js": "^5.1.0"
   },
