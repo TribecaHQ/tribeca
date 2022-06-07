@@ -96,7 +96,7 @@
     "*.{js,json,jsx,html,css,md}": "prettier --write"
   },
   "dependencies": {
-    "superstruct": "^0.15.4",
+    "superstruct": "^0.16.0",
     "tiny-invariant": "^1.2.0",
     "tslib": "^2.4.0"
   },
