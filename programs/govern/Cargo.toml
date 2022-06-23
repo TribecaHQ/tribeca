@@ -1,6 +1,6 @@
 [package]
 name = "govern"
-version = "0.5.6"
+version = "0.5.8"
 description = "Handles proposal creation, lifecycle, voting, and execution."
 edition = "2021"
 homepage = "https://tribeca.so"
