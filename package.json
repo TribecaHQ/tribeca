@@ -51,7 +51,7 @@
     "@types/eslint": "^8.4.3",
     "@types/lodash": "^4.14.182",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^16.11.41",
+    "@types/node": "^18.7.5",
     "@types/prettier": "^2.6.3",
     "@yarnpkg/doctor": "^4.0.0-rc.6",
     "bn.js": "^5.2.1",
