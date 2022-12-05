@@ -566,7 +566,7 @@ __metadata:
     "@types/eslint": ^8.4.3
     "@types/lodash": ^4.14.182
     "@types/mocha": ^9.1.1
-    "@types/node": ^16.11.41
+    "@types/node": ^18.11.11
     "@types/prettier": ^2.6.3
     "@yarnpkg/doctor": ^4.0.0-rc.6
     bn.js: ^5.2.1
@@ -799,10 +799,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.11.41":
-  version: 16.11.41
-  resolution: "@types/node@npm:16.11.41"
-  checksum: 808e4d65757bb13cf25e88dfa4e65880efef06652b04baecb051eb90cf090dda9812aa3505b31e963a48041eed7dbe0fc59c44c7c5e117da952ff951bf3a584a
+"@types/node@npm:^18.11.11":
+  version: 18.11.11
+  resolution: "@types/node@npm:18.11.11"
+  checksum: c4b1176a8f1714a3ee3fc2a5e1d568b0cd50209000282db5c68154b3c975952928dbb834ef3a0ce55bd7b345ae29f2cbf4a34635a070294d135a24254231386a
   languageName: node
   linkType: hard
 
